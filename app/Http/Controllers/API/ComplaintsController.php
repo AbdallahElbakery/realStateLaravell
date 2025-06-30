@@ -17,7 +17,6 @@ class ComplaintsController extends Controller
      */
     public function index()
     {
-        $user = User::all();
         $complaints = Complaint::all();
         return ComplaintResource::collection($complaints);
     }
