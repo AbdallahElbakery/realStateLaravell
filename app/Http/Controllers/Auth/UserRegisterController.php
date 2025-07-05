@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UserRegisterRequest;
-
 use App\Models\User;
 
 class UserRegisterController extends Controller

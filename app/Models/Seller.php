@@ -1,26 +1,27 @@
 <?php
 
 namespace App\Models;
-
-use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Database\Eloquent\Model;
 
 class Seller extends Model
 {
-    use HasApiTokens;
-    
+    protected $primaryKey = 'user_id';
+    public $incrementing = false;
     protected $fillable = [
-        'user_id',
-        'company_name',
-        'logo',
-        'personal_id_image',
-        'status',
+        "user_id",
+        "company_name",
+        "logo",
+        "personal_id_image",
+        "status",
+        "created_at",
+        "updated_at",
+        "updated_at",
     ];
-    
+
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->belongsTo(User::class);
     }
-    
 }
