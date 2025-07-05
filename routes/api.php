@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ComplaintsController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\PropertyController;
+use App\Http\Controllers\Api\BookingController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -13,3 +14,4 @@ Route::apiResource('complaints', ComplaintsController::class);
 Route::apiResource('notifications', NotificationController::class);
 Route::put('notifications', [NotificationController::class, 'markallasread']);
 Route::apiResource('properties', PropertyController::class);
+Route::apiResource('bookings', BookingController::class);
