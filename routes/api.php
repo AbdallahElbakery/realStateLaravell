@@ -12,6 +12,7 @@ use App\Http\Controllers\Auth\UserRegisterController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\logoutController;
+use App\Http\Controllers\Api\ReviewController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -32,6 +33,7 @@ Route::put('notifications',[NotificationController::class,'markallasread']);
 Route::post('register/user',[UserRegisterController::class,'register']);
 Route::post('register/seller',[SellerRegisterController::class,'register']);
 Route::post('login',[loginController::class,'login']);
+Route::apiResource('reviews', ReviewController::class);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout',[logoutController::class,'logout']);
