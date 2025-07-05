@@ -22,4 +22,7 @@ class Property extends Model
         "category_id",
         "address_id",
     ];
+    public function wishlist(){
+        return $this->belongsTo(Wishlist::class);
+    }
 }

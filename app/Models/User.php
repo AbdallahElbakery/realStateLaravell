@@ -8,6 +8,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Seller;
+use App\Models\Wishlist;
 
 class User extends Authenticatable
 {
@@ -50,5 +51,8 @@ class User extends Authenticatable
 
     public function seller(){
         return $this->hasOne(Seller::class);
+    }
+    public function wishlist(){
+        return $this->hasMany(Wishlist::class);
     }
 }
