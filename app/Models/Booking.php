@@ -13,4 +13,14 @@ class Booking extends Model
     'status',
 ];
 
+public function property()
+{
+    return $this->belongsTo(Property::class);
+}
+public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+
 }

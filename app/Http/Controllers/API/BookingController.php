@@ -11,9 +11,15 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        return Booking::all();
+        $userId = 1; 
+
+        $bookings = Booking::with('property')
+            ->where('user_id', $userId)
+            ->get();
+
+        return response()->json($bookings);
     }
 
     /**
@@ -21,14 +27,16 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        $data = $request->validate([
-            'user_id' => 'required|exists:users,id',
+        $request->validate([
             'property_id' => 'required|exists:properties,id',
             'suggested_price' => 'required|numeric|min:0',
-            'status' => 'in:pending,approved,rejected'
         ]);
 
-        $booking = Booking::create($data);
+        $booking = Booking::create([
+            'user_id' => 1, 
+            'property_id' => $request->property_id,
+            'suggested_price' => $request->suggested_price,
+        ]);
 
         return response()->json($booking, 201);
     }
@@ -36,22 +44,18 @@ class BookingController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Booking $booking)
+    public function show($id)
     {
-        return $booking;
+         return Booking::with(['property', 'user'])->findOrFail($id);
     }
 
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Booking $booking)
+    public function update(Request $request, $id)
     {
-        $data = $request->validate([
-            'suggested_price' => 'sometimes|numeric|min:0',
-            'status' => 'in:pending,approved,rejected'
-        ]);
-
-        $booking->update($data);
+        $booking = Booking::findOrFail($id);
+        $booking->update($request->only('suggested_price'));
 
         return response()->json($booking);
     }
@@ -59,10 +63,9 @@ class BookingController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Booking $booking)
+    public function destroy($id)
     {
-        $booking->delete();
-
+        Booking::destroy($id);
         return response()->json(['message' => 'Booking deleted']);
     }
 }
