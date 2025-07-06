@@ -9,6 +9,11 @@ use App\Http\Controllers\API\PropertyController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\API\SellerController;
 use App\Http\Controllers\Api\SellerBookingController;
+use App\Http\Controllers\Auth\UserRegisterController;
+use App\Http\Controllers\Auth\SellerRegisterController;
+use App\Http\Controllers\Auth\loginController;
+use App\Http\Controllers\Auth\logoutController;
+use App\Http\Controllers\Api\ReviewController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();

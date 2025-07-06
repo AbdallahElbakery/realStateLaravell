@@ -4,6 +4,7 @@ namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
@@ -24,6 +25,10 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'phone',
+        'photo',
+        'address_id',
+        'role',
     ];
 
     /**
@@ -49,10 +54,17 @@ class User extends Authenticatable
         ];
     }
 
-    public function seller(){
+    // public function address()
+    // {
+    //     return $this->hasOne(Address::class);
+    // }
+
+    public function seller()
+    {
         return $this->hasOne(Seller::class);
     }
     public function wishlist(){
         return $this->hasMany(Wishlist::class);
     }
 }
+
