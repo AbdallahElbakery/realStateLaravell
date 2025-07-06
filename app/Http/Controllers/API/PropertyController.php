@@ -5,6 +5,8 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Property;
+use App\Models\Address;
+use App\Models\User;
 use App\Http\Resources\PropertyResource;
 use App\Http\Requests\StoreProperty;
 use App\Http\Requests\UpdateProperty;
@@ -56,8 +58,15 @@ class PropertyController extends Controller
         }
 
         $property->update($request->validated());
-        $updatedProperty = new PropertyResource($property);
 
+        $address = Address::where('id', $property->address_id)->first();
+        $address->update([
+            "location" => $request->location,
+            "city" => $request->addcity,
+            "country" => $request->country,
+        ]);
+
+        $updatedProperty = new PropertyResource($property);
         return response()->json(["message" => "successfully edited this property with id " . $id, "new property after edit " => $updatedProperty], 200);
     }
 

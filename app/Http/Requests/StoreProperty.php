@@ -29,6 +29,7 @@ class StoreProperty extends FormRequest
         "purpose"=> "required",
         "area"=> "required",
         "bedrooms"=> "required",
+        "bathrooms"=> "required",
         "created_at"=> "required",
         "category_id" => "required|exists:categories,id",
         "seller_id"=> "required",

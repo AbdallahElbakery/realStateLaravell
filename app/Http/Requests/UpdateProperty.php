@@ -29,10 +29,13 @@ class UpdateProperty extends FormRequest
             "purpose" => "required",
             "area" => "required|integer|min:1",
             "bedrooms" => "required|integer|min:0",
+            "bathrooms" => "required|integer|min:0",
             "created_at" => "required",
             "category_id" => "required|exists:categories,id",
             "seller_id" => "required",
-            "address_id" => "required"
+            "country" => "required",
+            "location" => "required",
+            "image" => "required",
         ];
     }
 }

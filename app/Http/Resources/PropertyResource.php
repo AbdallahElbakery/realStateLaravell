@@ -24,7 +24,7 @@ class PropertyResource extends JsonResource
             "name" => $this->name,
             "description" => $this->description,
             "price" => $this->price,
-            "citynum" => $this->city,
+            "city" => $this->city,
             "purpose" => $this->purpose,
             "area" => $this->area,
             "bedrooms" => $this->bedrooms,
@@ -45,7 +45,7 @@ class PropertyResource extends JsonResource
             ],
 
             "country" => Address::where('id', $this->address_id)->value('country'),
-            "city" => Address::where('id', $this->address_id)->value("city"),
+            "addcity" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),
             "image" => $this->image,
             "images" => Image::where('property_id', $this->id)->pluck('image'),
