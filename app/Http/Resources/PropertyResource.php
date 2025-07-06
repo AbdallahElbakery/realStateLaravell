@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
 use App\Models\Image;
@@ -17,6 +18,8 @@ class PropertyResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = User::find($this->seller_id);
+        $seller = Seller::where('user_id', $this->seller_id)->first();
         return [
             "name" => $this->name,
             "description" => $this->description,
@@ -28,7 +31,19 @@ class PropertyResource extends JsonResource
             "bathrooms" => $this->bathrooms,
             "date" => $this->created_at,
             "category" => Category::where('id', $this->category_id)->value('category_name'),
-            "seller" => Seller::where('user_id', $this->seller_id)->first(),
+            "seller" => [
+                "user_id" => $user->id,
+                "name" => $user->name,
+                "email" => $user->email,
+                "phone" => $user->phone,
+                "role" => $user->role,
+                "photo" => $user->photo,
+                'company_name' => $seller->company_name,
+                'logo' => $seller->logo,
+                'status' => $seller->status,
+                "created_at" => $user->created_at,
+            ],
+
             "country" => Address::where('id', $this->address_id)->value('country'),
             "city" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),
