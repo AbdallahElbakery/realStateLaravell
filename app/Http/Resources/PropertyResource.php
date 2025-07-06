@@ -4,7 +4,10 @@ namespace App\Http\Resources;
 
 use Illuminate\Http\Request;
 use Illuminate\Http\Resources\Json\JsonResource;
-
+use App\Models\Image;
+use App\Models\Address;
+use App\Models\Category;
+use App\Models\Seller;
 class PropertyResource extends JsonResource
 {
     /**
@@ -18,14 +21,19 @@ class PropertyResource extends JsonResource
             "name" => $this->name,
             "description" => $this->description,
             "price" => $this->price,
-            "city" => $this->city,
+            "citynum" => $this->city,
             "purpose" => $this->purpose,
             "area" => $this->area,
             "bedrooms" => $this->bedrooms,
-            "created_at" => $this->created_at,
-            "category_id" => $this->category_id,
-            "seller_id" => $this->seller_id,
-            "address_id" => $this->address_id,
+            "bathrooms" => $this->bathrooms,
+            "date" => $this->created_at,
+            "category" => Category::where('id', $this->category_id)->value('category_name'),
+            "seller" => Seller::where('user_id', $this->seller_id)->first(),
+            "country" => Address::where('id', $this->address_id)->value('country'),
+            "city" => Address::where('id', $this->address_id)->value("city"),
+            "location" => Address::where('id', $this->address_id)->value("full_address"),
+            "image" => $this->image,
+            "images" => Image::where('property_id', $this->id)->pluck('image'),
         ];
     }
 }

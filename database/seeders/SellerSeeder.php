@@ -16,8 +16,8 @@ class SellerSeeder extends Seeder
     {
         DB::table('sellers')->insert(
             [
-                "user_id" =>4 ,
-                "company_name" => "Google",
+                "user_id" =>3 ,
+                "company_name" => "imdova",
                 "logo" => "image.png",
                 "personal_id_image" => "image.png",
                 "status" => "active",

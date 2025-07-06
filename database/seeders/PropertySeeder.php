@@ -35,7 +35,7 @@ class PropertySeeder extends Seeder
                 'bedrooms' => rand(1, 5),
                 'created_at' => now(),
                 'updated_at' => now(),
-
+                'wishlist_id'=>1
             ]);
 
         }
