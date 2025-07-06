@@ -12,6 +12,7 @@ class Seller extends Model
     protected $fillable = [
         "user_id",
         "company_name",
+        "about_company",
         "logo",
         "personal_id_image",
         "status",

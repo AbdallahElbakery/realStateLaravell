@@ -18,6 +18,7 @@ class SellerResource extends JsonResource
         return [
             "seller_data" => User::where('id', $this->user_id)->get(),
             "company_name" => $this->company_name,
+            "about_company"=> $this->about_company,
             "logo" => $this->logo,
             "personal_id_image" => $this->personal_id_image,
             "status" => $this->status,

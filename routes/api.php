@@ -32,6 +32,10 @@ Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class,
 
 Route::apiResource('sellers', SellerController::class);
 
+Route::patch('sellers/update-company-details/{id}',[SellerController::class,'updateCompanyDetails']);
+Route::patch('sellers/update-personal-details/{id}',[SellerController::class,'editPersonalInfo']);
+Route::patch('sellers/change-password/{id}',[SellerController::class,'changePassword']);
+
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
