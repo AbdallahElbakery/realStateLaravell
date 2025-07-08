@@ -8,15 +8,14 @@ class Address extends Model
 {
     protected $table = "addresses";
     protected $fillable = [
-        "id",
         "country",
         "city",
         "postal_code",
         "street",
         "full_address",
-        "created_at",
     ];
-    public function properties() {
+    public function properties()
+    {
         return $this->hasMany(Property::class);
     }
 }

@@ -28,8 +28,16 @@ class PropertyController extends Controller
      */
     public function store(StoreProperty $request)
     {
-        $property = Property::create($request->validated());
-        $createdProperty = new PropertyResource($property);
+        $address = Address::create([
+            "full_address" => $request->location,
+            "country" => $request->country,
+            "city" => $request->city,
+        ]);
+    $propertyData = $request->validated();
+    $propertyData['address_id'] = $address->id;
+
+    $property = Property::create($propertyData);        
+    $createdProperty = new PropertyResource($property);
         return response()->json(["message" => "property created successfuly", "new property" => $createdProperty], 200);
     }
 
@@ -57,15 +65,14 @@ class PropertyController extends Controller
             return response()->json(["message" => "not found this property to edit with id " . $id], 404);
         }
 
-        $property->update($request->validated());
+        $address = Address::find($property->address_id);
 
-        $address = Address::where('id', $property->address_id)->first();
         $address->update([
-            "location" => $request->location,
-            "city" => $request->addcity,
+            "city" => $request->city,
             "country" => $request->country,
+            "full_address" => $request->location,
         ]);
-
+        $property->update($request->validated());
         $updatedProperty = new PropertyResource($property);
         return response()->json(["message" => "successfully edited this property with id " . $id, "new property after edit " => $updatedProperty], 200);
     }
