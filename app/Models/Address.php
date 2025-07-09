@@ -13,6 +13,7 @@ class Address extends Model
         "postal_code",
         "street",
         "full_address",
+        "image",
     ];
     public function properties()
     {
