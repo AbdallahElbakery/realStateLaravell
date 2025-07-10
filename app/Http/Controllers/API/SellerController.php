@@ -1,15 +1,17 @@
 <?php
 
 namespace App\Http\Controllers\Api;
-
-use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreSeller;
-use App\Http\Requests\UpdateSeller;
-use App\Models\User;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Controller;
+use App\Models\Property;
+use App\Models\User;
 use App\Models\Seller;
 use App\Models\Address;
 use App\Http\Resources\SellerResource;
+use App\Http\Requests\StoreProperty;
+use App\Http\Requests\StoreSeller;
+use App\Http\Requests\UpdateSeller;
+use App\Http\Requests\StoreOwnProperty;
 
 class SellerController extends Controller
 {
@@ -97,15 +99,15 @@ class SellerController extends Controller
             'photo' => $request->photo,
         ]);
         $seller = Seller::where('user_id', $user->id)->first();
-        
+
         $seller->update([
             'personal_id_image' => $request->personal_id_image
         ]);
 
         Address::where('id', $user->address_id)->update([
-        'full_address' => $request->full_address,
+            'full_address' => $request->full_address,
         ]);
-        
+
         $updated = new SellerResource($seller);
         return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
     }
@@ -134,5 +136,28 @@ class SellerController extends Controller
         }
         $seller->delete();
         return response()->json(['Message' => 'Deleted successfully!']);
+    }
+
+    public function deleteOwnProperty($user_id, $prop_id)
+    {
+        $property = Property::where('seller_id', $user_id);
+        $propertyId = $property->where('id', $prop_id)->first();
+        if (!$propertyId) {
+            return response()->json(['msg' => 'this property is not found'], 404);
+        }
+        $propertyId->delete();
+        return response()->json('deleted');
+    }
+
+
+    public function addOwnProperty(StoreOwnProperty $request, $user_id)
+    {
+        $seller = Seller::find($user_id);
+        if (!$seller) {
+            return response()->json(['msg' => 'this seller is not existed'], 404);
+        }
+        Property::create(array_merge($request->validated(), ['seller_id' => $seller->user_id]));
+
+        return response()->json(["msg" => "added new property owned to seller " . $seller->user_id], 201);
     }
 }

@@ -24,7 +24,6 @@ class StoreSeller extends FormRequest
         return [
             "user_id" => "required",
             "company_name" => "required",
-            "required" => "required",
             "logo" => "required",
             "personal_id_image" => "required",
         ];

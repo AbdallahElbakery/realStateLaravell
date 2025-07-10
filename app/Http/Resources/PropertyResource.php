@@ -45,6 +45,7 @@ class PropertyResource extends JsonResource
                 "created_at" => $user->created_at,
             ],
             "address_id"=>$this->address_id,
+            // "seller_user_id"=>$this->seller_id,
             "country" => Address::where('id', $this->address_id)->value('country'),
             "city" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),

@@ -32,16 +32,12 @@ class StoreProperty extends FormRequest
             "bathrooms" => "required",
             "created_at" => "required",
             "category_id" => "required|exists:categories,id",
-            "seller_id" => "required",
+            "seller_id" => "required|exists:sellers,user_id",
             "city" => "required",
             "location" => "required",
             "country" => "required",
-<<<<<<< Updated upstream
-            "image" => "required"
-=======
-            "address_id" => "required|exists:addresses,id",
-
             // "image" => "required"
+            "address_id" => "required|exists:addresses,id",
         ];
 
         
@@ -49,7 +45,9 @@ class StoreProperty extends FormRequest
     public function messages():array{
         return[
             "seller_id"=> "this seller is not found"
->>>>>>> Stashed changes
         ];
+
+        
     }
+
 }

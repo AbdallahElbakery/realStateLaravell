@@ -28,6 +28,7 @@ class Property extends Model
     {
         return $this->belongsTo(Wishlist::class);
     }
+
     public function images()
     {
         return $this->hasMany(Image::class);
@@ -35,5 +36,9 @@ class Property extends Model
     public function address()
     {
         return $this->belongsTo(Address::class);
+    }
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
     }
 }
