@@ -21,10 +21,11 @@ class PropertyResource extends JsonResource
         $user = User::find($this->seller_id);
         $seller = Seller::where('user_id', $this->seller_id)->first();
         return [
+            'id'=> $this->id,
             "name" => $this->name,
             "description" => $this->description,
             "price" => $this->price,
-            "citynum" => $this->city,
+            "citynum" => $this->citynum,
             "purpose" => $this->purpose,
             "area" => $this->area,
             "bedrooms" => $this->bedrooms,
@@ -43,12 +44,8 @@ class PropertyResource extends JsonResource
                 'status' => $seller->status,
                 "created_at" => $user->created_at,
             ],
-<<<<<<< Updated upstream
-
-=======
-            // "seller_user_id"=>$this->seller_id,
             "address_id"=>$this->address_id,
->>>>>>> Stashed changes
+            // "seller_user_id"=>$this->seller_id,
             "country" => Address::where('id', $this->address_id)->value('country'),
             "city" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),
