@@ -24,13 +24,23 @@ class Property extends Model
         "address_id",
         "image",
     ];
+<<<<<<< Updated upstream
     public function wishlist(){
         return $this->belongsTo(Wishlist::class);
     }
     public function images(){
+=======
+
+    public function images()
+    {
+>>>>>>> Stashed changes
         return $this->hasMany(Image::class);
     }
     public function address(){
         return $this->belongsTo(Address::class); 
+    }
+    public function seller()
+    {
+        return $this->belongsTo(Seller::class);
     }
 }

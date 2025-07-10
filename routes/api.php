@@ -32,11 +32,25 @@ Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class,
 
 Route::apiResource('sellers', SellerController::class);
 
+<<<<<<< Updated upstream
 Route::patch('sellers/update-company-details/{id}',[SellerController::class,'updateCompanyDetails']);
 Route::patch('sellers/update-personal-details/{id}',[SellerController::class,'editPersonalInfo']);
 Route::patch('sellers/change-password/{id}',[SellerController::class,'changePassword']);
+=======
+Route::patch('sellers/update-company-details/{id}', [SellerController::class, 'updateCompanyDetails']);
+Route::patch('sellers/update-personal-details/{id}', [SellerController::class, 'editPersonalInfo']);
+Route::patch('sellers/change-password/{id}', [SellerController::class, 'changePassword']);
+Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
+
+>>>>>>> Stashed changes
 
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
+<<<<<<< Updated upstream
+=======
+
+Route::apiResource('addresses', AddressController::class);
+
+>>>>>>> Stashed changes
 // Route::get('sellers/{user_id}', [SellerController::class, 'show']);

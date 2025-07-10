@@ -43,7 +43,12 @@ class PropertyResource extends JsonResource
                 'status' => $seller->status,
                 "created_at" => $user->created_at,
             ],
+<<<<<<< Updated upstream
 
+=======
+            // "seller_user_id"=>$this->seller_id,
+            "address_id"=>$this->address_id,
+>>>>>>> Stashed changes
             "country" => Address::where('id', $this->address_id)->value('country'),
             "city" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreSeller;
 use App\Http\Requests\UpdateSeller;
+use App\Models\Property;
 use App\Models\User;
 use Illuminate\Http\Request;
 use App\Models\Seller;
@@ -134,5 +135,15 @@ class SellerController extends Controller
         }
         $seller->delete();
         return response()->json(['Message' => 'Deleted successfully!']);
+    }
+
+    public function deleteOwnProperty($user_id,$prop_id){
+        $property=Property::where('seller_id',$user_id);
+        $propertyId=$property->where('id',$prop_id)->first();
+        if(!$propertyId){
+            return response()->json(['msg'=> 'this property is not found'],404);
+        }
+        $propertyId->delete();
+        return response()->json('deleted');
     }
 }
