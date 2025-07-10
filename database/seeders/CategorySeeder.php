@@ -23,13 +23,13 @@ class CategorySeeder extends Seeder
             ],
             [
                 'id' => 2,
-                'category_name' => "Villa",
+                'category_name' => "penthouse",
                 'created_at' => now(),
                 'updated_at' => now(),
             ],
             [
                 'id' =>3,
-                'category_name' => "Villa",
+                'category_name' => "appartment",
                 'created_at' => now(),
                 'updated_at' => now(),
             ]

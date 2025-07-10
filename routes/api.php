@@ -15,6 +15,7 @@ use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\logoutController;
 use App\Http\Controllers\Api\ReviewController;
+use App\Http\Controllers\Api\AddressController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -38,9 +39,16 @@ Route::post('seller/bookings/{booking}/confirm', [SellerBookingController::class
 Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class, 'cancel']);
 
 Route::apiResource('sellers', SellerController::class);
-Route::apiResource('users', UserController::class);
+
+Route::patch('sellers/update-company-details/{id}',[SellerController::class,'updateCompanyDetails']);
+Route::patch('sellers/update-personal-details/{id}',[SellerController::class,'editPersonalInfo']);
+Route::patch('sellers/change-password/{id}',[SellerController::class,'changePassword']);
+Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
+Route::post('sellers/{user_id}',[SellerController::class,'addOwnProperty']);
 
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
+
+Route::apiResource('addresses', AddressController::class);
 // Route::get('sellers/{user_id}', [SellerController::class, 'show']);

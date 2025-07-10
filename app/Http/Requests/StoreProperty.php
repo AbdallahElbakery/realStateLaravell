@@ -22,17 +22,28 @@ class StoreProperty extends FormRequest
     public function rules(): array
     {
         return [
-        "name"=> "required|max:255",
-        "description"=> "required|min:50",
-        "price"=> "required",
-        "city"=> "required",
-        "purpose"=> "required",
-        "area"=> "required",
-        "bedrooms"=> "required",
-        "created_at"=> "required",
-        "category_id" => "required|exists:categories,id",
-        "seller_id"=> "required",
-        "address_id"=> "required"
+            "name" => "required|max:255",
+            "description" => "required|min:50",
+            "citynum" => "required",
+            "price" => "required",
+            "purpose" => "required",
+            "area" => "required",
+            "bedrooms" => "required",
+            "bathrooms" => "required",
+            "created_at" => "required",
+            "category_id" => "required|exists:categories,id",
+            "seller_id" => "required|exists:sellers,user_id",
+            "city" => "required",
+            "location" => "required",
+            "country" => "required",
+            // "image" => "required"
+        ];
+
+        
+    }
+    public function messages():array{
+        return[
+            "seller_id"=> "this seller is not found"
         ];
     }
 }

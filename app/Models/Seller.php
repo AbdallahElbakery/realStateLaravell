@@ -12,16 +12,24 @@ class Seller extends Model
     protected $fillable = [
         "user_id",
         "company_name",
+        "about_company",
         "logo",
         "personal_id_image",
         "status",
         "created_at",
         "updated_at",
         "updated_at",
+        // "own_properties",
+
     ];
 
     public function user()
     {
         return $this->belongsTo(User::class);
     }
+    public function properties()
+    {
+        return $this->hasMany(Property::class, 'seller_id', 'user_id');
+    }
+
 }

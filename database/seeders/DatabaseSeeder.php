@@ -11,6 +11,7 @@ use Database\Seeders\SellerSeeder;
 use Database\Seeders\CategorySeeder;
 use Database\Seeders\PropertySeeder;
 use Database\Seeders\AddressSeeder;
+use Database\Seeders\ReviewSeeder;
 
 class DatabaseSeeder extends Seeder
 {

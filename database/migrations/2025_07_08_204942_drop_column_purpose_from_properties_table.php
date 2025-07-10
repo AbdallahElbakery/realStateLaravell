@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->foreignId('wishlist_id')->constrained('wishlists')->onDelete('cascade')->nullable();
+            $table->dropColumn('purpose');
         });
     }
 
@@ -22,7 +22,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('properties', function (Blueprint $table) {
-            $table->dropColumn('wishlist_id');
+            //
         });
     }
 };
