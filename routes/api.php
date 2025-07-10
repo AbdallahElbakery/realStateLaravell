@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\API\WishlistController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ComplaintsController;
@@ -42,4 +43,7 @@ Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy'])
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 
 Route::apiResource('addresses', AddressController::class);
+
+
+Route::apiResource('categories', CategoryController::class);
 // Route::get('sellers/{user_id}', [SellerController::class, 'show']);
