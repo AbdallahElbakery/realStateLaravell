@@ -8,6 +8,7 @@ use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\PropertyController;
 use App\Http\Controllers\Api\BookingController;
 use App\Http\Controllers\API\SellerController;
+use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Api\SellerBookingController;
 use App\Http\Controllers\Auth\UserRegisterController;
 use App\Http\Controllers\Auth\SellerRegisterController;
@@ -18,6 +19,12 @@ use App\Http\Controllers\Api\ReviewController;
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
 // })->middleware('auth:sanctum');
+
+Route::post('login',[loginController::class,'login']);
+Route::post('register/user',[UserRegisterController::class,'register']);
+Route::post('register/seller',[SellerRegisterController::class,'register']);
+Route::middleware('auth:sanctum')->post('/logout', [LogoutController::class, 'logout']);
+
 Route::apiResource('complaints', ComplaintsController::class);
 
 Route::apiResource('notifications', NotificationController::class);
@@ -31,6 +38,7 @@ Route::post('seller/bookings/{booking}/confirm', [SellerBookingController::class
 Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class, 'cancel']);
 
 Route::apiResource('sellers', SellerController::class);
+Route::apiResource('users', UserController::class);
 
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
