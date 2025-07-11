@@ -24,7 +24,10 @@ use App\Http\Controllers\Api\AddressController;
 Route::post('login',[loginController::class,'login']);
 Route::post('register/user',[UserRegisterController::class,'register']);
 Route::post('register/seller',[SellerRegisterController::class,'register']);
-Route::middleware('auth:sanctum')->post('/logout', [LogoutController::class, 'logout']);
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('logout',[logoutController::class,'logout']);
+});
 
 Route::apiResource('complaints', ComplaintsController::class);
 
@@ -33,7 +36,7 @@ Route::put('notifications', [NotificationController::class, 'markallasread']);
 
 Route::apiResource('properties', PropertyController::class);
 
-Route::apiResource('bookings', BookingController::class);
+Route::apiResource('user/bookings', BookingController::class);
 Route::apiResource('seller/bookings', SellerBookingController::class);
 Route::post('seller/bookings/{booking}/confirm', [SellerBookingController::class, 'confirm']);
 Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class, 'cancel']);
