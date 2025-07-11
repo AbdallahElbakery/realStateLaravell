@@ -40,6 +40,7 @@ Route::patch('sellers/change-password/{id}',[SellerController::class,'changePass
 Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
 Route::post('sellers/{user_id}',[SellerController::class,'addOwnProperty']);
 Route::put('sellers/{user_id}/{prop_id}', [SellerController::class, 'updateOwnProperty']);
+Route::get('sellers/{user_id}/{prop_id}', [SellerController::class, 'getOwnProperty']);
 
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);

@@ -77,7 +77,7 @@ class SellerController extends Controller
         }
         $seller->update([
             'company_name' => $request->company_name,
-            'logo' => $request->logo,
+            // 'logo' => $request->logo,
             'about_company' => $request->about_company,
         ]);
         $updated = new SellerResource($seller);
@@ -97,7 +97,7 @@ class SellerController extends Controller
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => $request->role,
-            'photo' => $request->photo,
+            // 'photo' => $request->photo,
         ]);
         $seller = Seller::where('user_id', $user->id)->first();
 
@@ -143,17 +143,28 @@ class SellerController extends Controller
 
     public function updateOwnProperty(UpdateOwnProperty $request, $user_id,$prop_id)
     {
-        $seller = Seller::find($user_id);
-        $property=Property::where('seller_id',$seller->user_id);
+        $seller=Seller::where('user_id',$user_id)->first();
+        $property = Property::where('seller_id',$user_id)->where('id',$prop_id)->first();
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not existed'], 404);
         }
         if (!$property) {
             return response()->json(['msg' => 'this property not owned to this seller'], 404);
         }
-        $property->update(array_merge($request->validated(), ['seller_id' => $seller->user_id]));
+        
+        $property->update($request->validated());
+        return response()->json(["msg" => "updated property owned to seller " . $seller->user_id,"Propert"=>$property], 200);
+    }
 
-        return response()->json(["msg" => "updated property owned to seller " . $seller->user_id], 200);
+
+    public function getOwnProperty($user_id,$prop_id)
+    {
+        $prop=Property::where('seller_id',$user_id);
+        $property=$prop->where('id',$prop_id)->first();
+        if (!$property) {
+            return response()->json(['msg' => 'this property not found'], 404);
+        }
+        return response()->json(["Property" => $property], 200);
     }
 
     public function deleteOwnProperty($user_id, $prop_id)
