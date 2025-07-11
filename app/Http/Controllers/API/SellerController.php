@@ -12,6 +12,7 @@ use App\Http\Requests\StoreProperty;
 use App\Http\Requests\StoreSeller;
 use App\Http\Requests\UpdateSeller;
 use App\Http\Requests\StoreOwnProperty;
+use App\Http\Requests\UpdateOwnProperty;
 
 class SellerController extends Controller
 {
@@ -128,14 +129,31 @@ class SellerController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $user_id)
+
+    public function addOwnProperty(StoreOwnProperty $request, $user_id)
     {
-        $seller = Seller::where('user_id', $user_id)->first();
+        $seller = Seller::find($user_id);
         if (!$seller) {
-            return response()->json(["msg" => "This seller is not found"], 404);
+            return response()->json(['msg' => 'this seller is not existed'], 404);
         }
-        $seller->delete();
-        return response()->json(['Message' => 'Deleted successfully!']);
+        Property::create(array_merge($request->validated(), ['seller_id' => $seller->user_id]));
+
+        return response()->json(["msg" => "added new property owned to seller " . $seller->user_id], 201);
+    }
+
+    public function updateOwnProperty(UpdateOwnProperty $request, $user_id,$prop_id)
+    {
+        $seller = Seller::find($user_id);
+        $property=Property::where('seller_id',$seller->user_id);
+        if (!$seller) {
+            return response()->json(['msg' => 'this seller is not existed'], 404);
+        }
+        if (!$property) {
+            return response()->json(['msg' => 'this property not owned to this seller'], 404);
+        }
+        $property->update(array_merge($request->validated(), ['seller_id' => $seller->user_id]));
+
+        return response()->json(["msg" => "updated property owned to seller " . $seller->user_id], 200);
     }
 
     public function deleteOwnProperty($user_id, $prop_id)
@@ -149,15 +167,13 @@ class SellerController extends Controller
         return response()->json('deleted');
     }
 
-
-    public function addOwnProperty(StoreOwnProperty $request, $user_id)
+    public function destroy(string $user_id)
     {
-        $seller = Seller::find($user_id);
+        $seller = Seller::where('user_id', $user_id)->first();
         if (!$seller) {
-            return response()->json(['msg' => 'this seller is not existed'], 404);
+            return response()->json(["msg" => "This seller is not found"], 404);
         }
-        Property::create(array_merge($request->validated(), ['seller_id' => $seller->user_id]));
-
-        return response()->json(["msg" => "added new property owned to seller " . $seller->user_id], 201);
+        $seller->delete();
+        return response()->json(['Message' => 'Deleted successfully!']);
     }
 }
