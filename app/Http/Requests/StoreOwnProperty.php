@@ -24,7 +24,7 @@ class StoreOwnProperty extends FormRequest
         return [
             // "image" => "required",
             "name" => "required|max:255",
-            "description" => "required|min:50",
+            "description" => "required",
             "citynum" => "required",
             "price" => "required",
             "country" => "required",

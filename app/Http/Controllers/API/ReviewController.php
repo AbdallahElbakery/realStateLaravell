@@ -14,7 +14,9 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return Review::with(['user', 'seller'])->get();
+        
+        return \App\Models\Review::with(['user'])->get();
+
     }
 
     /**

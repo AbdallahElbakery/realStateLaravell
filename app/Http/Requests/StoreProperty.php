@@ -37,6 +37,7 @@ class StoreProperty extends FormRequest
             "location" => "required",
             "country" => "required",
             // "image" => "required"
+            "address_id" => "required|exists:addresses,id",
         ];
 
         
@@ -45,5 +46,8 @@ class StoreProperty extends FormRequest
         return[
             "seller_id"=> "this seller is not found"
         ];
+
+        
     }
+
 }

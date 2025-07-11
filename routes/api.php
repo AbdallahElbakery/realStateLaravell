@@ -1,12 +1,13 @@
 <?php
 
 use App\Http\Controllers\API\WishlistController;
+use App\Http\Controllers\API\CategoryController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ComplaintsController;
 use App\Http\Controllers\API\NotificationController;
 use App\Http\Controllers\API\PropertyController;
-use App\Http\Controllers\Api\BookingController;
+use App\Http\Controllers\API\BookingController;
 use App\Http\Controllers\API\SellerController;
 use App\Http\Controllers\API\UserController;
 use App\Http\Controllers\Api\SellerBookingController;
@@ -14,8 +15,8 @@ use App\Http\Controllers\Auth\UserRegisterController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\logoutController;
-use App\Http\Controllers\Api\ReviewController;
-use App\Http\Controllers\Api\AddressController;
+use App\Http\Controllers\API\ReviewController;
+use App\Http\Controllers\API\AddressController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -54,4 +55,10 @@ Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy'])
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 
 Route::apiResource('addresses', AddressController::class);
+
+
+Route::apiResource('categories', CategoryController::class);
 // Route::get('sellers/{user_id}', [SellerController::class, 'show']);
+
+
+Route::get('/reviews', [ReviewController::class, 'index']);
