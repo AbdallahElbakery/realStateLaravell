@@ -65,4 +65,11 @@ class ReviewController extends Controller
         $review->delete();
         return response()->json(['message' => 'Deleted']);
     }
+
+    public function getReviewsBySeller($sellerId)
+    {
+        // جلب الريفيوهات المرتبطة بالبائع
+        $reviews = Review::where('seller_id', $sellerId)->get();
+        return response()->json($reviews);
+    }
 }

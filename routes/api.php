@@ -58,7 +58,6 @@ Route::apiResource('addresses', AddressController::class);
 
 
 Route::apiResource('categories', CategoryController::class);
-// Route::get('sellers/{user_id}', [SellerController::class, 'show']);
 
 
 Route::get('/reviews', [ReviewController::class, 'index']);
