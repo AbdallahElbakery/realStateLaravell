@@ -15,7 +15,7 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         try {
-            $userId = 1; // استبدلها بالمستخدم الحالي
+            $userId = auth()->id();
 
             $bookings = Booking::with('property')
                 ->where('user_id', $userId)
@@ -29,7 +29,7 @@ class BookingController extends Controller
 
             return response()->json([
                 'message' => 'Bookings retrieved successfully',
-                'bookings' => $bookings
+                'bookings' => $bookings,
             ]);
 
         } catch (\Exception $e) {
@@ -49,11 +49,11 @@ class BookingController extends Controller
             $request->validate([
                 'property_id' => 'required|exists:properties,id',
                 'suggested_price' => 'required|numeric|min:0',
-                
+
             ]);
 
             $booking = Booking::create([
-                'user_id' => 1, 
+                'user_id' =>  auth()->id(),
                 'property_id' => $request->property_id,
                 'suggested_price' => $request->suggested_price,
                 'status' => 'pending',
@@ -88,7 +88,7 @@ class BookingController extends Controller
     {
         try {
             $booking = Booking::with(['property', 'user'])->findOrFail($id);
-            
+
             return response()->json([
                 'message' => 'Booking retrieved successfully',
                 'booking' => $booking
