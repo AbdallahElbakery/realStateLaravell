@@ -15,9 +15,9 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         try {
-            $userId = auth()->id();
+            $userId = 1; // استبدلها بالمستخدم الحالي
 
-            $bookings = Booking::with('property')
+            $bookings = Booking::with('property.images')
                 ->where('user_id', $userId)
                 ->get();
 
@@ -53,7 +53,7 @@ class BookingController extends Controller
             ]);
 
             $booking = Booking::create([
-                'user_id' =>  auth()->id(),
+                'user_id' => 1, 
                 'property_id' => $request->property_id,
                 'suggested_price' => $request->suggested_price,
                 'status' => 'pending',
@@ -143,6 +143,33 @@ class BookingController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'message' => 'Error deleting booking',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function myBookings(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $bookings = Booking::with('property.images')
+                ->where('user_id', $user->id)
+                ->get();
+
+            // Transform property data using PropertyResource
+            $bookings->transform(function ($booking) {
+                $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
+                return $booking;
+            });
+
+            return response()->json([
+                'message' => 'Bookings retrieved successfully',
+                'bookings' => $bookings
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error loading bookings',
                 'error' => $e->getMessage()
             ], 500);
         }

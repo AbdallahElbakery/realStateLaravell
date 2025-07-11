@@ -50,7 +50,7 @@ class PropertyResource extends JsonResource
             "city" => Address::where('id', $this->address_id)->value("city"),
             "location" => Address::where('id', $this->address_id)->value("full_address"),
             "image" => $this->image,
-            "images" => Image::where('property_id', $this->id)->pluck('image'),
+            "images" => $this->images->pluck('image'),
         ];
     }
 }

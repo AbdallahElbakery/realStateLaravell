@@ -28,8 +28,6 @@ Route::post('register/seller',[SellerRegisterController::class,'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('logout',[logoutController::class,'logout']);
-    Route::apiResource('user/bookings', BookingController::class);
-
 });
 
 Route::apiResource('complaints', ComplaintsController::class);
@@ -39,9 +37,12 @@ Route::put('notifications', [NotificationController::class, 'markallasread']);
 
 Route::apiResource('properties', PropertyController::class);
 
+Route::apiResource('user/bookings', BookingController::class);
 Route::apiResource('seller/bookings', SellerBookingController::class);
 Route::post('seller/bookings/{booking}/confirm', [SellerBookingController::class, 'confirm']);
 Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class, 'cancel']);
+
+Route::middleware('auth:sanctum')->get('/my-bookings', [BookingController::class, 'myBookings']);
 
 Route::apiResource('sellers', SellerController::class);
 
@@ -62,3 +63,5 @@ Route::apiResource('categories', CategoryController::class);
 
 
 Route::get('/reviews', [ReviewController::class, 'index']);
+Route::post('/reviews', [ReviewController::class, 'store']);
+Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);
