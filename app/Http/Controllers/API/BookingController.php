@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Http\Resources\PropertyResource;
 
 class BookingController extends Controller
 {
@@ -14,11 +15,17 @@ class BookingController extends Controller
     public function index(Request $request)
     {
         try {
-            $userId = 1; 
+            $userId = 1; // استبدلها بالمستخدم الحالي
 
             $bookings = Booking::with('property')
                 ->where('user_id', $userId)
                 ->get();
+
+            // غيّر بيانات العقار لكل حجز لتكون باستخدام PropertyResource
+            $bookings->transform(function ($booking) {
+                $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
+                return $booking;
+            });
 
             return response()->json([
                 'message' => 'Bookings retrieved successfully',
@@ -42,6 +49,7 @@ class BookingController extends Controller
             $request->validate([
                 'property_id' => 'required|exists:properties,id',
                 'suggested_price' => 'required|numeric|min:0',
+                
             ]);
 
             $booking = Booking::create([
