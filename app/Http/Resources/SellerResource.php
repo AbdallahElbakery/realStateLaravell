@@ -17,8 +17,12 @@ class SellerResource extends JsonResource
      */
     public function toArray(Request $request): array
     {
+        $user = User::where("id", $this->user_id)->first();
         return [
             "seller_data" => User::where('id', $this->user_id)->get(),
+            "password" => $user->password,
+            'newPass' => $request->newPass,
+            'confirmPassword' => $request->confirmPassword,
             "company_name" => $this->company_name,
             "about_company" => $this->about_company,
             "logo" => $this->logo,
