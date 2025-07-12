@@ -27,8 +27,8 @@ class DatabaseSeeder extends Seeder
         $this->call(CategorySeeder::class);
         $this->call(PropertySeeder::class);
         $this->call(AddressSeeder::class);
-        $this->call([ReviewSeeder::class,
-    ]);
+        $this->call(ReviewSeeder::class);
+        
         User::factory()->create([
             'name' => 'Test User',
             'email' => 'test@example.com',

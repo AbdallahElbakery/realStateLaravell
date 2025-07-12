@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Http\Resources\PropertyResource;
 
 class BookingController extends Controller
 {
@@ -13,13 +14,30 @@ class BookingController extends Controller
      */
     public function index(Request $request)
     {
-        $userId = 1; 
+        try {
+            $userId = 1; // استبدلها بالمستخدم الحالي
 
-        $bookings = Booking::with('property')
-            ->where('user_id', $userId)
-            ->get();
+            $bookings = Booking::with('property.images')
+                ->where('user_id', $userId)
+                ->get();
 
-        return response()->json($bookings);
+            // غيّر بيانات العقار لكل حجز لتكون باستخدام PropertyResource
+            $bookings->transform(function ($booking) {
+                $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
+                return $booking;
+            });
+
+            return response()->json([
+                'message' => 'Bookings retrieved successfully',
+                'bookings' => $bookings,
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error loading bookings',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -27,18 +45,40 @@ class BookingController extends Controller
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'property_id' => 'required|exists:properties,id',
-            'suggested_price' => 'required|numeric|min:0',
-        ]);
+        try {
+            $request->validate([
+                'property_id' => 'required|exists:properties,id',
+                'suggested_price' => 'required|numeric|min:0',
 
-        $booking = Booking::create([
-            'user_id' => 1, 
-            'property_id' => $request->property_id,
-            'suggested_price' => $request->suggested_price,
-        ]);
+            ]);
 
-        return response()->json($booking, 201);
+            $booking = Booking::create([
+                'user_id' => 1, 
+                'property_id' => $request->property_id,
+                'suggested_price' => $request->suggested_price,
+                'status' => 'pending',
+            ]);
+
+            // Load the property relationship
+            $booking->load('property');
+
+            return response()->json([
+                'message' => 'تم إنشاء الحجز بنجاح',
+                'booking' => $booking
+            ], 201);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            return response()->json([
+                'message' => 'بيانات غير صحيحة',
+                'errors' => $e->errors()
+            ], 422);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'حدث خطأ أثناء إنشاء الحجز',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -46,7 +86,20 @@ class BookingController extends Controller
      */
     public function show($id)
     {
-         return Booking::with(['property', 'user'])->findOrFail($id);
+        try {
+            $booking = Booking::with(['property', 'user'])->findOrFail($id);
+
+            return response()->json([
+                'message' => 'Booking retrieved successfully',
+                'booking' => $booking
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Booking not found',
+                'error' => $e->getMessage()
+            ], 404);
+        }
     }
 
     /**
@@ -54,10 +107,24 @@ class BookingController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $booking = Booking::findOrFail($id);
-        $booking->update($request->only('suggested_price'));
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->update($request->only('suggested_price'));
 
-        return response()->json($booking);
+            // Load the property relationship after update
+            $booking->load('property');
+
+            return response()->json([
+                'message' => 'Booking updated successfully',
+                'booking' => $booking
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error updating booking',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 
     /**
@@ -65,7 +132,46 @@ class BookingController extends Controller
      */
     public function destroy($id)
     {
-        Booking::destroy($id);
-        return response()->json(['message' => 'Booking deleted']);
+        try {
+            $booking = Booking::findOrFail($id);
+            $booking->delete();
+
+            return response()->json([
+                'message' => 'Booking deleted successfully'
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error deleting booking',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    public function myBookings(Request $request)
+    {
+        try {
+            $user = $request->user();
+            $bookings = Booking::with('property.images')
+                ->where('user_id', $user->id)
+                ->get();
+
+            // Transform property data using PropertyResource
+            $bookings->transform(function ($booking) {
+                $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
+                return $booking;
+            });
+
+            return response()->json([
+                'message' => 'Bookings retrieved successfully',
+                'bookings' => $bookings
+            ]);
+
+        } catch (\Exception $e) {
+            return response()->json([
+                'message' => 'Error loading bookings',
+                'error' => $e->getMessage()
+            ], 500);
+        }
     }
 }

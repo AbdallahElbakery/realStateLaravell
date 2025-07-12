@@ -19,4 +19,10 @@ class Address extends Model
     {
         return $this->hasMany(Property::class);
     }
+
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
 }

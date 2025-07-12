@@ -14,7 +14,7 @@ class ReviewController extends Controller
      */
     public function index()
     {
-        return Review::with(['user', 'seller'])->get();
+        return \App\Models\Review::with(['user'])->get();
     }
 
     /**
@@ -30,7 +30,7 @@ class ReviewController extends Controller
         ]);
 
         $review = Review::create($data);
-        return response()->json($review, 201);
+        return response()->json($review->load(['user']), 201);
     }
 
     /**
@@ -38,6 +38,7 @@ class ReviewController extends Controller
      */
     public function show(string $id)
     {
+        $review = Review::findOrFail($id);
         return $review->load(['user', 'seller']);
     }
 
@@ -46,13 +47,14 @@ class ReviewController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $review = Review::findOrFail($id);
         $data = $request->validate([
             'rating' => 'sometimes|required|integer|min:1|max:5',
             'comment' => 'nullable|string',
         ]);
 
         $review->update($data);
-        return response()->json($review);
+        return response()->json($review->load(['user']));
     }
 
     /**
@@ -60,7 +62,32 @@ class ReviewController extends Controller
      */
     public function destroy(string $id)
     {
+        $review = Review::findOrFail($id);
         $review->delete();
         return response()->json(['message' => 'Deleted']);
+    }
+
+    /**
+     * Get reviews by seller ID
+     */
+    public function getReviewsBySeller($sellerId)
+    {
+        try {
+            // التحقق من وجود البائع
+            $seller = User::find($sellerId);
+            if (!$seller) {
+                return response()->json(['error' => 'Seller not found'], 404);
+            }
+
+            // جلب المراجعات المرتبطة بالبائع مع معلومات المستخدم
+            $reviews = Review::where('seller_id', $sellerId)
+                ->with(['user'])
+                ->orderBy('created_at', 'desc')
+                ->get();
+
+            return response()->json($reviews);
+        } catch (\Exception $e) {
+            return response()->json(['error' => 'Error fetching reviews'], 500);
+        }
     }
 }

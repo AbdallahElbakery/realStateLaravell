@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class SellerRegisterRequest extends FormRequest
+class StoreUserRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -26,13 +26,8 @@ class SellerRegisterRequest extends FormRequest
             'email' => 'required|string|email|max:255|unique:users',
             'phone' => 'required|string|max:15',
             'password' => 'required|string|min:8|confirmed',
-            // 'photo' => 'nullable|image|max:2048',
-            'city' => 'required|string|max:255',
-            'country' => 'required|string|max:255',
-            'company_name' => 'required|string|max:255',
-            // 'logo' => 'nullable|image|max:2048',
-            // 'personal_id_image' => 'nullable|image|max:2048',
-            'status' => 'in:active,inactive',
+            'photo' => 'nullable|image|max:2048',
+            'address_id' => 'required|integer|exists:addresses,id',
         ];
     }
 }
