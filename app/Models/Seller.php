@@ -19,7 +19,8 @@ class Seller extends Model
         "created_at",
         "updated_at",
         "updated_at",
-        "password"
+        "password",
+        "image"
         // "own_properties",
         
     ];
