@@ -109,13 +109,16 @@ class SellerController extends Controller
         if (!$user) {
             return response()->json(['msg' => 'this seller is not found'], 404);
         }
-        $path = $request->file('photo')->store('properties', 'public');
+        $file= $request->file('photo');
+        $file_name=time() . '_' . $file->getClientOriginalName();
+        $path = $file->move(public_path('uploads'), $file_name);
+
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => $request->role,
-            'photo' => $path,
+            'photo' => $file_name,
         ]);
         $seller = Seller::where('user_id', $user->id)->first();
 
