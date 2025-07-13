@@ -50,9 +50,9 @@ class SellerRegisterController extends Controller
         $token = $user->createToken('auth_token')->plainTextToken;
         // Return a response
         return response()->json([
-            'message' => 'Seller registered successfully',
-            'user' => $user,
-            'token' =>$token
+                'message' => 'Seller registered successfully',
+                'user' => $user,
+                'token' =>$token
             ], 201);
     }
 }

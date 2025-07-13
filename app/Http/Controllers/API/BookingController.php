@@ -12,15 +12,13 @@ class BookingController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(Request $request): \Illuminate\Http\JsonResponse
     {
         try {
             $userId = auth()->id();
-
             $bookings = Booking::with('property')
                 ->where('user_id', $userId)
                 ->get();
-
             // غيّر بيانات العقار لكل حجز لتكون باستخدام PropertyResource
             $bookings->transform(function ($booking) {
                 $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
@@ -49,9 +47,27 @@ class BookingController extends Controller
             $request->validate([
                 'property_id' => 'required|exists:properties,id',
                 'suggested_price' => 'required|numeric|min:0',
-
             ]);
+            //Check if the booking exists
+            $existingBooking = Booking::where('user_id', auth()->id())
+                ->where('property_id', $request->property_id)
+                ->first();
 
+            if ($existingBooking) {
+                return response()->json([
+                    'message' => 'You already have an offer for this property'
+                ], 400);
+            }
+
+            //Check if the property available
+            $property = \App\Models\Property::findOrFail($request->property_id);
+            if ($property->status !== 'available') {
+                return response()->json([
+                    'message' => 'This property is not available for booking'
+                ], 400);
+            }
+
+            //create new bokking
             $booking = Booking::create([
                 'user_id' =>  auth()->id(),
                 'property_id' => $request->property_id,
