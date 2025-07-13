@@ -5,71 +5,94 @@ namespace App\Http\Controllers\API;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Booking;
+use App\Models\Property;
+use Illuminate\Support\Facades\Log;
 
 class SellerBookingController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $sellerId = 1; 
-        $bookings = Booking::with(['user', 'property'])
-            ->whereHas('property', fn($q) => $q->where('seller_id', $sellerId))
-            ->latest()
-            ->get();
+        try {
+            $sellerId = auth()->id();
 
-        return response()->json($bookings);
-    }
+            if (!$sellerId) {
+                return response()->json([
+                    'message' => 'Unauthorized'
+                ], 401);
+            }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
-    }
+            $propertyIds = Property::where('seller_id', $sellerId)->pluck('id');
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
-    {
-        $booking = Booking::with(['user', 'property'])->findOrFail($id);
-        return response()->json($booking);
-    }
+            if ($propertyIds->isEmpty()) {
+                return response()->json([
+                    'message' => 'No properties found for this seller.'
+                ], 404);
+            }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
+            $bookings = Booking::with(['user', 'property'])
+                ->whereIn('property_id', $propertyIds)
+                ->latest()
+                ->get();
 
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
+            return response()->json([
+                'message' => 'Bookings retrieved successfully',
+                'data' => $bookings
+            ]);
+
+        } catch (\Exception $e) {
+            Log::error('Error fetching seller bookings: ' . $e->getMessage());
+
+            return response()->json([
+                'message' => 'An error occurred while fetching bookings. Please try again later.'
+            ], 500);
+        }
     }
 
     public function confirm($id)
     {
-        $booking = Booking::findOrFail($id);
+        $booking = Booking::with('property')->findOrFail($id);
+
+        if (!$booking->property || $booking->property->seller_id !== auth()->id()) {
+            return response()->json(['message' => 'Unauthorized'], 403);
+        }
+
         $booking->status = 'confirmed';
         $booking->save();
 
-        return response()->json(['message' => 'Booking confirmed']);
+        $property = $booking->property;
+        $property->status = 'sold';
+        $property->save();
+
+        return response()->json(['message' => 'Booking confirmed and property marked as sold']);
     }
 
     public function cancel($id)
     {
-        $booking = Booking::findOrFail($id);
-        $booking->status = 'cancelled';
-        $booking->save();
+        try {
+            $booking = Booking::with('property')->findOrFail($id);
 
-        return response()->json(['message' => 'Booking cancelled']);
+            if (!$booking->property || $booking->property->seller_id !== auth()->id()) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            $booking->status = 'cancelled';
+            $booking->save();
+
+            return response()->json([
+                'message' => 'Booking cancelled successfully',
+                'data' => [
+                    'booking_id' => $booking->id,
+                    'status' => $booking->status
+                ]
+            ]);
+
+        } catch (\Exception $e) {
+            \Log::error("Error cancelling booking: " . $e->getMessage());
+            return response()->json(['message' => 'An error occurred. Please try again later.'], 500);
+        }
     }
+
 }

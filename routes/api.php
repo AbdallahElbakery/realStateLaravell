@@ -23,37 +23,33 @@ use App\Http\Controllers\API\PaymentController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('login', [loginController::class, 'login']);
-Route::post('register/user', [UserRegisterController::class, 'register']);
-Route::post('register/seller', [SellerRegisterController::class, 'register']);
+//auth
+Route::post('login',[loginController::class,'login']);
+Route::post('register/user',[UserRegisterController::class,'register']);
+Route::post('register/seller',[SellerRegisterController::class,'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout', [logoutController::class, 'logout']);
-});
+    //logout
+    Route::post('logout',[logoutController::class,'logout']);
 
-Route::apiResource('properties', PropertyController::class)->only(['index', 'show']);
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('properties', [PropertyController::class, 'store']);
-    Route::put('properties/{id}', [PropertyController::class, 'update']);
-    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
-});
+    //user-bookings
+    Route::apiResource('user/bookings', BookingController::class);
+    Route::get('/my-bookings', [BookingController::class, 'myBookings']);
 
-Route::apiResource('user/bookings', BookingController::class);
-Route::apiResource('seller/bookings', SellerBookingController::class);
-Route::post('seller/bookings/{booking}/confirm', [SellerBookingController::class, 'confirm']);
-Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class, 'cancel']);
+    //seller/bookings
+    Route::prefix('seller/bookings')->controller(SellerBookingController::class)->group(function () {
+        Route::get('/', 'index');
+        Route::post('{booking}/confirm', 'confirm');
+        Route::post('{booking}/cancel', 'cancel');
+    });
 
-Route::middleware('auth:sanctum')->get('/my-bookings', [BookingController::class, 'myBookings']);
-
-Route::middleware('auth:sanctum')->apiResource('sellers', SellerController::class)->only(['index', 'store']);
-
-Route::middleware('auth:sanctum')->group(function () {
+    //seller
+    Route::apiResource('sellers', SellerController::class)->only(['index', 'store']);
     Route::get('seller', [SellerController::class, 'show']);
     Route::put('seller', [SellerController::class, 'update']);
     Route::delete('seller', [SellerController::class, 'destroy']);
-});
 
-Route::middleware('auth:sanctum')->group(function () {
+    //seller-profile
     Route::patch('seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
     Route::patch('seller/change-password', [SellerController::class, 'changePassword']);
     Route::match(['POST', 'PATCH'],'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
@@ -61,26 +57,39 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('seller-update-prop/{prop_id}', [SellerController::class, 'updateOwnProperty']);
     Route::get('seller-get-prop/{prop_id}', [SellerController::class, 'getOwnProperty']);
     Route::delete('seller-delete-prop/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
+
+    //properties
+    Route::post('properties', [PropertyController::class, 'store']);
+    Route::put('properties/{id}', [PropertyController::class, 'update']);
+    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
+
+    //addresses
+    Route::apiResource('addresses', AddressController::class);
+
+    //categories
+    Route::apiResource('categories', CategoryController::class);
+
 });
 
+//properties
+Route::apiResource('properties', PropertyController::class)->only(['index', 'show']);
 
-Route::middleware('auth:sanctum')->apiResource('addresses', AddressController::class);
+//sellers
+Route::apiResource('sellers', SellerController::class)->only(['index', 'store']);
 
-Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
+//complaints
+Route::apiResource('complaints', ComplaintsController::class);
 
+//notifications
+Route::apiResource('notifications', NotificationController::class);
+Route::put('notifications', [NotificationController::class, 'markallasread']);
 
-Route::get('/reviews', [ReviewController::class, 'index']);
-Route::post('/reviews', [ReviewController::class, 'store']);
-Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);
-
-
-
-
+//wishlist
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 
-Route::apiResource('complaints', ComplaintsController::class);
-
-Route::apiResource('notifications', NotificationController::class);
-Route::put('notifications', [NotificationController::class, 'markallasread']);
+//reviews
+Route::get('/reviews', [ReviewController::class, 'index']);
+Route::post('/reviews', [ReviewController::class, 'store']);
+Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);
