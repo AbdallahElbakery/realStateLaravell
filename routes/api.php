@@ -22,20 +22,20 @@ use App\Http\Controllers\API\AddressController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::post('login',[loginController::class,'login']);
-Route::post('register/user',[UserRegisterController::class,'register']);
-Route::post('register/seller',[SellerRegisterController::class,'register']);
+Route::post('login', [loginController::class, 'login']);
+Route::post('register/user', [UserRegisterController::class, 'register']);
+Route::post('register/seller', [SellerRegisterController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
-    Route::post('logout',[logoutController::class,'logout']);
+    Route::post('logout', [logoutController::class, 'logout']);
 });
 
-Route::apiResource('complaints', ComplaintsController::class);
-
-Route::apiResource('notifications', NotificationController::class);
-Route::put('notifications', [NotificationController::class, 'markallasread']);
-
-Route::apiResource('properties', PropertyController::class);
+Route::apiResource('properties', PropertyController::class)->only(['index', 'show']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('properties', [PropertyController::class, 'store']);
+    Route::put('properties/{id}', [PropertyController::class, 'update']);
+    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
+});
 
 Route::apiResource('user/bookings', BookingController::class);
 Route::apiResource('seller/bookings', SellerBookingController::class);
@@ -44,22 +44,19 @@ Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class,
 
 Route::middleware('auth:sanctum')->get('/my-bookings', [BookingController::class, 'myBookings']);
 
-Route::apiResource('sellers', SellerController::class);
+Route::middleware('auth:sanctum')->apiResource('sellers', SellerController::class);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::patch('sellers/update-company-details/{id}', [SellerController::class, 'updateCompanyDetails']);
+    Route::patch('sellers/update-personal-details/{id}', [SellerController::class, 'editPersonalInfo']);
+    Route::patch('sellers/change-password/{id}', [SellerController::class, 'changePassword']);
+    Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
+    Route::post('sellers/{user_id}', [SellerController::class, 'addOwnProperty']);
+    Route::put('sellers/{user_id}/{prop_id}', [SellerController::class, 'updateOwnProperty']);
+    Route::get('sellers/{user_id}/{prop_id}', [SellerController::class, 'getOwnProperty']);
+});
 
-Route::patch('sellers/update-company-details/{id}',[SellerController::class,'updateCompanyDetails']);
-Route::patch('sellers/update-personal-details/{id}',[SellerController::class,'editPersonalInfo']);
-Route::patch('sellers/change-password/{id}',[SellerController::class,'changePassword']);
-Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
-Route::post('sellers/{user_id}',[SellerController::class,'addOwnProperty']);
-Route::put('sellers/{user_id}/{prop_id}', [SellerController::class, 'updateOwnProperty']);
-Route::get('sellers/{user_id}/{prop_id}', [SellerController::class, 'getOwnProperty']);
-
-Route::apiResource('wishlist', WishlistController::class);
-Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
-Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 
 Route::apiResource('addresses', AddressController::class);
-
 
 Route::apiResource('categories', CategoryController::class);
 
@@ -67,3 +64,15 @@ Route::apiResource('categories', CategoryController::class);
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'store']);
 Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);
+
+
+
+
+Route::apiResource('wishlist', WishlistController::class);
+Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
+Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
+
+Route::apiResource('complaints', ComplaintsController::class);
+
+Route::apiResource('notifications', NotificationController::class);
+Route::put('notifications', [NotificationController::class, 'markallasread']);
