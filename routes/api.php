@@ -17,6 +17,7 @@ use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\logoutController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
+use App\Http\Controllers\API\PaymentController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
