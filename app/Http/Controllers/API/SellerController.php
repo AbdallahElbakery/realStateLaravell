@@ -18,9 +18,6 @@ use Illuminate\Support\Facades\Validator;
 
 class SellerController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
         $allSellers = Seller::all();
@@ -28,9 +25,7 @@ class SellerController extends Controller
         return response()->json(["Message" => "Returned successflly", "All sellers" => $sellers], 200);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
+
     public function store(StoreSeller $request)
     {
         $seller = Seller::create($request->validated());
@@ -38,14 +33,14 @@ class SellerController extends Controller
         return response()->json(["Message" => "Created successflly", "created seller" => $createdSeller], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $user_id)
+
+    public function show()
     {
-        // $seller = Seller::where('user_id',$user_id)->first();
-        $user = User::find($user_id);
+        $user = auth()->user();
         $singleSeller = Seller::where('user_id', $user->id)->first();
+        if ($user->role != 'seller') {
+            return response()->json(['message' => 'this user is not a seller'], 404);
+        }
         if (!$singleSeller) {
             return response()->json(["msg" => "This seller is not found"], 404);
         }
@@ -53,14 +48,11 @@ class SellerController extends Controller
         return response()->json(["Message" => "Returned successflly", 'Seller' => $seller], 200);
     }
 
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateSeller $request, string $user_id)
+
+    public function update(UpdateSeller $request)
     {
-        $user = User::find($user_id);
+        $user = auth()->user();
         $seller = Seller::where('user_id', $user->id)->first();
-        // dd($seller);
         if (!$seller) {
             return response()->json(["msg" => "This seller is not found"], 404);
         }
@@ -70,9 +62,9 @@ class SellerController extends Controller
         return response()->json(["Message" => "Updated successflly", 'Seller' => $updatedSeller], 200);
     }
 
-    public function updateCompanyDetails(Request $request, $user_id)
+    public function updateCompanyDetails(Request $request)
     {
-        $user = User::find($user_id);
+        $user = auth()->user();
         $seller = Seller::where('user_id', $user->id)->first();
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not found'], 404);
@@ -86,40 +78,9 @@ class SellerController extends Controller
         return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
     }
 
-
-    public function editPersonalInfo(Request $request, $user_id)
+    public function changePassword(UpdateSellerPass $request)
     {
-        $user = User::find($user_id);
-        if (!$user) {
-            return response()->json(['msg' => 'this seller is not found'], 404);
-        }
-
-        $path = $request->file('photo')->store('properties', 'public');
-        $user->update([
-            'name' => $request->name,
-            'email' => $request->email,
-            'phone' => $request->phone,
-            'role' => $request->role,
-            'photo' => $path,
-        ]);
-        $seller = Seller::where('user_id', $user->id)->first();
-
-        $seller->update([
-            'personal_id_image' => $request->personal_id_image
-        ]);
-
-        Address::where('id', $user->address_id)->update([
-            'full_address' => $request->full_address,
-        ]);
-
-        $updated = new SellerResource($seller);
-        return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
-    }
-
-
-    public function changePassword(UpdateSellerPass $request, $user_id)
-    {
-        $user = User::find($user_id);
+        $user = auth()->user();
 
         if (!$user) {
             return response()->json(['msg' => 'User not found'], 404);
@@ -142,9 +103,42 @@ class SellerController extends Controller
         ], 200);
     }
 
-    public function addOwnProperty(StoreOwnProperty $request, $user_id)
+    public function editPersonalInfo(Request $request)
     {
-        $seller = Seller::find($user_id);
+        $user = auth()->user();
+        if (!$user) {
+            return response()->json(['msg' => 'this seller is not found'], 404);
+        }
+
+        // $path = $request->file('photo')->store('properties', 'public');
+        $user->update([
+            'name' => $request->name,
+            'email' => $request->email,
+            'phone' => $request->phone,
+            'role' => $request->role,
+            // 'photo' => $path,
+        ]);
+        $seller = Seller::where('user_id', $user->id)->first();
+
+        $seller->update([
+            'personal_id_image' => $request->personal_id_image
+        ]);
+
+        Address::where('id', $user->address_id)->update([
+            'full_address' => $request->full_address,
+        ]);
+
+        $updated = new SellerResource($seller);
+        return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
+    }
+
+
+
+
+    public function addOwnProperty(StoreOwnProperty $request)
+    {
+        $user = auth()->user();
+        $seller = Seller::find($user->id);
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not existed'], 404);
         }
@@ -158,10 +152,11 @@ class SellerController extends Controller
         return response()->json(["msg" => "added new property owned to seller " . $seller->user_id], 201);
     }
 
-    public function updateOwnProperty(UpdateOwnProperty $request, $user_id, $prop_id)
+    public function updateOwnProperty(UpdateOwnProperty $request, $prop_id)
     {
-        $seller = Seller::where('user_id', $user_id)->first();
-        $property = Property::where('seller_id', $user_id)->where('id', $prop_id)->first();
+        $user = auth()->user();
+        $seller = Seller::where('user_id', $user->id)->first();
+        $property = Property::where('seller_id', $user->id)->where('id', $prop_id)->first();
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not existed'], 404);
         }
@@ -170,13 +165,14 @@ class SellerController extends Controller
         }
 
         $property->update($request->validated());
-        return response()->json(["msg" => "updated property owned to seller " . $seller->user_id, "Propert" => $property], 200);
+        return response()->json(["msg" => "updated property with id " . $property->id . " owned to seller " . $seller->user_id, "Propert" => $property], 200);
     }
 
 
-    public function getOwnProperty($user_id, $prop_id)
+    public function getOwnProperty($prop_id)
     {
-        $prop = Property::where('seller_id', $user_id);
+        $user = auth()->user();
+        $prop = Property::where('seller_id', $user->id);
         $property = $prop->where('id', $prop_id)->first();
         if (!$property) {
             return response()->json(['msg' => 'this property not found'], 404);
@@ -184,9 +180,10 @@ class SellerController extends Controller
         return response()->json(["Property" => $property], 200);
     }
 
-    public function deleteOwnProperty($user_id, $prop_id)
+    public function deleteOwnProperty($prop_id)
     {
-        $property = Property::where('seller_id', $user_id);
+        $user= auth()->user();
+        $property = Property::where('seller_id', $user->id);
         $propertyId = $property->where('id', $prop_id)->first();
         if (!$propertyId) {
             return response()->json(['msg' => 'this property is not found'], 404);
@@ -195,9 +192,10 @@ class SellerController extends Controller
         return response()->json('deleted');
     }
 
-    public function destroy(string $user_id)
+    public function destroy()
     {
-        $seller = Seller::where('user_id', $user_id)->first();
+        $user = auth()->user();
+        $seller = Seller::where('user_id', $user->id)->first();
         if (!$seller) {
             return response()->json(["msg" => "This seller is not found"], 404);
         }

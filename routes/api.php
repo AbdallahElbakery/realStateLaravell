@@ -44,21 +44,28 @@ Route::post('seller/bookings/{booking}/cancel', [SellerBookingController::class,
 
 Route::middleware('auth:sanctum')->get('/my-bookings', [BookingController::class, 'myBookings']);
 
-Route::middleware('auth:sanctum')->apiResource('sellers', SellerController::class);
+Route::middleware('auth:sanctum')->apiResource('sellers', SellerController::class)->only(['index', 'store']);
+
 Route::middleware('auth:sanctum')->group(function () {
-    Route::patch('sellers/update-company-details/{id}', [SellerController::class, 'updateCompanyDetails']);
-    Route::patch('sellers/update-personal-details/{id}', [SellerController::class, 'editPersonalInfo']);
-    Route::patch('sellers/change-password/{id}', [SellerController::class, 'changePassword']);
-    Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
-    Route::post('sellers/{user_id}', [SellerController::class, 'addOwnProperty']);
-    Route::put('sellers/{user_id}/{prop_id}', [SellerController::class, 'updateOwnProperty']);
-    Route::get('sellers/{user_id}/{prop_id}', [SellerController::class, 'getOwnProperty']);
+    Route::get('seller', [SellerController::class, 'show']);
+    Route::put('seller', [SellerController::class, 'update']);
+    Route::delete('seller', [SellerController::class, 'destroy']);
+});
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::patch('sellers/update-company-details', [SellerController::class, 'updateCompanyDetails']);
+    Route::patch('sellers/change-password', [SellerController::class, 'changePassword']);
+    Route::patch('sellers/update-personal-details', [SellerController::class, 'editPersonalInfo']);
+    Route::post('seller-add-prop', [SellerController::class, 'addOwnProperty']);
+    Route::put('seller-update-prop/{prop_id}', [SellerController::class, 'updateOwnProperty']);
+    Route::get('seller-get-prop/{prop_id}', [SellerController::class, 'getOwnProperty']);
+    Route::delete('seller-delete-prop/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
 });
 
 
-Route::apiResource('addresses', AddressController::class);
+Route::middleware('auth:sanctum')->apiResource('addresses', AddressController::class);
 
-Route::apiResource('categories', CategoryController::class);
+Route::middleware('auth:sanctum')->apiResource('categories', CategoryController::class);
 
 
 Route::get('/reviews', [ReviewController::class, 'index']);
