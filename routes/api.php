@@ -24,13 +24,13 @@ use App\Http\Controllers\API\PaymentController;
 // })->middleware('auth:sanctum');
 
 //auth
-Route::post('login',[loginController::class,'login']);
-Route::post('register/user',[UserRegisterController::class,'register']);
-Route::post('register/seller',[SellerRegisterController::class,'register']);
+Route::post('login', [loginController::class, 'login']);
+Route::post('register/user', [UserRegisterController::class, 'register']);
+Route::post('register/seller', [SellerRegisterController::class, 'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //logout
-    Route::post('logout',[logoutController::class,'logout']);
+    Route::post('logout', [logoutController::class, 'logout']);
 
     //user-bookings
     Route::apiResource('user/bookings', BookingController::class);
@@ -52,7 +52,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //seller-profile
     Route::patch('seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
     Route::patch('seller/change-password', [SellerController::class, 'changePassword']);
-    Route::match(['POST', 'PATCH'],'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
+    Route::match(['POST', 'PATCH'], 'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
     Route::post('seller-add-prop', [SellerController::class, 'addOwnProperty']);
     Route::put('seller-update-prop/{prop_id}', [SellerController::class, 'updateOwnProperty']);
     Route::get('seller-get-prop/{prop_id}', [SellerController::class, 'getOwnProperty']);
@@ -69,6 +69,10 @@ Route::middleware('auth:sanctum')->group(function () {
     //categories
     Route::apiResource('categories', CategoryController::class);
 
+    //payment
+    Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
+    Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
+    Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 });
 
 //properties
