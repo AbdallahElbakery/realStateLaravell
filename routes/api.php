@@ -22,45 +22,73 @@ use App\Http\Controllers\API\AddressController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
+//auth
 Route::post('login',[loginController::class,'login']);
 Route::post('register/user',[UserRegisterController::class,'register']);
 Route::post('register/seller',[SellerRegisterController::class,'register']);
 
 Route::middleware('auth:sanctum')->group(function () {
+    //logout
     Route::post('logout',[logoutController::class,'logout']);
+
+    //user-bookings
     Route::apiResource('user/bookings', BookingController::class);
+    Route::get('/my-bookings', [BookingController::class, 'myBookings']);
+
+    //seller/bookings
     Route::prefix('seller/bookings')->controller(SellerBookingController::class)->group(function () {
         Route::get('/', 'index');
         Route::post('{booking}/confirm', 'confirm');
         Route::post('{booking}/cancel', 'cancel');
     });
+
+    //seller
+    Route::apiResource('sellers', SellerController::class)->only(['index', 'store']);
+    Route::get('seller', [SellerController::class, 'show']);
+    Route::put('seller', [SellerController::class, 'update']);
+    Route::delete('seller', [SellerController::class, 'destroy']);
+
+    //seller-profile
+    Route::patch('seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
+    Route::patch('seller/change-password', [SellerController::class, 'changePassword']);
+    Route::match(['POST', 'PATCH'],'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
+    Route::post('seller-add-prop', [SellerController::class, 'addOwnProperty']);
+    Route::put('seller-update-prop/{prop_id}', [SellerController::class, 'updateOwnProperty']);
+    Route::get('seller-get-prop/{prop_id}', [SellerController::class, 'getOwnProperty']);
+    Route::delete('seller-delete-prop/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
+
+    //properties
+    Route::post('properties', [PropertyController::class, 'store']);
+    Route::put('properties/{id}', [PropertyController::class, 'update']);
+    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
+
+    //addresses
+    Route::apiResource('addresses', AddressController::class);
+
+    //categories
+    Route::apiResource('categories', CategoryController::class);
+
 });
 
+//properties
+Route::apiResource('properties', PropertyController::class)->only(['index', 'show']);
+
+//sellers
+Route::apiResource('sellers', SellerController::class)->only(['index', 'store']);
+
+//complaints
 Route::apiResource('complaints', ComplaintsController::class);
 
+//notifications
 Route::apiResource('notifications', NotificationController::class);
 Route::put('notifications', [NotificationController::class, 'markallasread']);
 
-Route::apiResource('properties', PropertyController::class);
-
-
-
-Route::apiResource('sellers', SellerController::class);
-
-Route::patch('sellers/update-company-details/{id}',[SellerController::class,'updateCompanyDetails']);
-Route::patch('sellers/update-personal-details/{id}',[SellerController::class,'editPersonalInfo']);
-Route::patch('sellers/change-password/{id}',[SellerController::class,'changePassword']);
-Route::delete('sellers/{user_id}/{prop_id}', [SellerController::class, 'deleteOwnProperty']);
-Route::post('sellers/{user_id}',[SellerController::class,'addOwnProperty']);
-
+//wishlist
 Route::apiResource('wishlist', WishlistController::class);
 Route::delete('wishlist/{id}/{prop_id}', [WishlistController::class, 'destroy']);
 Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 
-Route::apiResource('addresses', AddressController::class);
-
-
-Route::apiResource('categories', CategoryController::class);
-
-
+//reviews
 Route::get('/reviews', [ReviewController::class, 'index']);
+Route::post('/reviews', [ReviewController::class, 'store']);
+Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);

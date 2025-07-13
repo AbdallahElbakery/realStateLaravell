@@ -19,7 +19,7 @@ class BookingController extends Controller
             $bookings = Booking::with('property')
                 ->where('user_id', $userId)
                 ->get();
-            // غيّر بيانات العقار لكل حجز لتكون باستخدام PropertyResource
+
             $bookings->transform(function ($booking) {
                 $booking->property = $booking->property ? (new PropertyResource($booking->property))->toArray(request()) : null;
                 return $booking;
@@ -48,6 +48,7 @@ class BookingController extends Controller
                 'property_id' => 'required|exists:properties,id',
                 'suggested_price' => 'required|numeric|min:0',
             ]);
+
             //Check if the booking exists
             $existingBooking = Booking::where('user_id', auth()->id())
                 ->where('property_id', $request->property_id)
@@ -79,19 +80,19 @@ class BookingController extends Controller
             $booking->load('property');
 
             return response()->json([
-                'message' => 'تم إنشاء الحجز بنجاح',
+                'message' => 'Booking created successfully',
                 'booking' => $booking
             ], 201);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             return response()->json([
-                'message' => 'بيانات غير صحيحة',
+                'message' => ' Validation error',
                 'errors' => $e->errors()
             ], 422);
 
         } catch (\Exception $e) {
             return response()->json([
-                'message' => 'حدث خطأ أثناء إنشاء الحجز',
+                'message' => 'Error creating booking',
                 'error' => $e->getMessage()
             ], 500);
         }

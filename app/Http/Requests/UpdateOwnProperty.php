@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreOwnProperty extends FormRequest
+class UpdateOwnProperty extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -22,11 +22,14 @@ class StoreOwnProperty extends FormRequest
     public function rules(): array
     {
         return [
-            "image" => "required",
+            // "image" => "required",
             "name" => "required|max:255",
             "description" => "required",
             "citynum" => "required",
             "price" => "required",
+            // "country" => "required",
+            // "city" => "required",
+            // "location" => "required",
             "area" => "required",
             "bedrooms" => "required",
             "bathrooms" => "required",
