@@ -25,7 +25,7 @@ class UpdateSeller extends FormRequest
             "company_name" => "required",
             "about_company"=> "required",
             "logo" => "required",
-            "personal_id_image" => "required",
+            // "personal_id_image" => "required",
         ];
     }
 }

@@ -55,7 +55,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::patch('seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
     Route::patch('seller/change-password', [SellerController::class, 'changePassword']);
-    Route::patch('seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
+    Route::match(['POST', 'PATCH'],'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
     Route::post('seller-add-prop', [SellerController::class, 'addOwnProperty']);
     Route::put('seller-update-prop/{prop_id}', [SellerController::class, 'updateOwnProperty']);
     Route::get('seller-get-prop/{prop_id}', [SellerController::class, 'getOwnProperty']);

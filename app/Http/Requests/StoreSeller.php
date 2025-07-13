@@ -25,7 +25,7 @@ class StoreSeller extends FormRequest
             "user_id" => "required",
             "company_name" => "required",
             "logo" => "required",
-            "personal_id_image" => "required",
+            // "personal_id_image" => "required",
             "about_company"=> "required",
         ];
     }

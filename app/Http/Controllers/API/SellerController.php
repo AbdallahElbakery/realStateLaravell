@@ -109,20 +109,19 @@ class SellerController extends Controller
         if (!$user) {
             return response()->json(['msg' => 'this seller is not found'], 404);
         }
-
-        // $path = $request->file('photo')->store('properties', 'public');
+        $path = $request->file('photo')->store('properties', 'public');
         $user->update([
             'name' => $request->name,
             'email' => $request->email,
             'phone' => $request->phone,
             'role' => $request->role,
-            // 'photo' => $path,
+            'photo' => $path,
         ]);
         $seller = Seller::where('user_id', $user->id)->first();
 
-        $seller->update([
-            'personal_id_image' => $request->personal_id_image
-        ]);
+        // $seller->update([
+        //     'personal_id_image' => $request->personal_id_image
+        // ]);
 
         Address::where('id', $user->address_id)->update([
             'full_address' => $request->full_address,
@@ -131,10 +130,6 @@ class SellerController extends Controller
         $updated = new SellerResource($seller);
         return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
     }
-
-
-
-
     public function addOwnProperty(StoreOwnProperty $request)
     {
         $user = auth()->user();
@@ -182,7 +177,7 @@ class SellerController extends Controller
 
     public function deleteOwnProperty($prop_id)
     {
-        $user= auth()->user();
+        $user = auth()->user();
         $property = Property::where('seller_id', $user->id);
         $propertyId = $property->where('id', $prop_id)->first();
         if (!$propertyId) {
