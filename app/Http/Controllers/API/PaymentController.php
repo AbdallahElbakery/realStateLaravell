@@ -14,6 +14,11 @@ class PaymentController extends Controller
 
     public function paypal(Request $request)
     {
+        $booking = Booking::find($request->id);
+        if (!$booking) {
+            return response()->json(['error' => 'Booking not found'], 404);
+        }
+        $suggested_price = $booking->suggested_price;
         $provider = new PayPalClient;
         $provider->setApiCredentials(config("paypal"));
         $provider->getAccessToken();
@@ -27,7 +32,7 @@ class PaymentController extends Controller
                 [
                     "amount" => [
                         "currency_code" => "USD",
-                        "value" => $request->suggested_price
+                        "value" => $suggested_price
                     ]
                 ]
             ]
@@ -35,14 +40,17 @@ class PaymentController extends Controller
 
         // dd($response);
         if (isset($response['id']) && $response['id'] != null) {
-
+            $booking->paypal_order_token = $response['id'];
+            $booking->save();
             foreach ($response['links'] as $link) {
                 if ($link['rel'] == 'approve') {
-                    session()->put('property_name', $request->property_name);
-                    session()->put('quantity', $request->quantity);
-                    return redirect()->away($link['href']);
+                    return response()->json([
+                        'success' => true,
+                        'approval_url' => $link['href'],
+                    ]);
                 }
             }
+
         } else {
             return redirect()->route('cancel');
         }
@@ -56,16 +64,18 @@ class PaymentController extends Controller
         $response = $provider->capturePaymentOrder($request->token);
         // dd($response);
         if (isset($response['status']) && $response['status'] == 'COMPLETED') {
-            $booking=Booking::where('paypal_order_token',$request->token)->first();
-            if($booking){
-                $booking->status = 'paid';
-                $booking->payment_id = $response['id'];
-                $booking->save();
+            $booking = Booking::where('paypal_order_token', $request->token)->first();
+            if (!$booking) {
+                return response()->json(['msg' => 'Booking not found'], 404);
             }
+            $booking->status = 'paid';
+            $booking->payment_id = $response['id'];
+            $booking->save();
+            
             $payment = new Payment;
             $payment->payment_id = $response['id'];
-            $payment->property_name = session()->get('property_name');
-            $payment->quantity = session()->get('quantity');
+            $payment->property_id = $booking->property_id;
+            $payment->quantity = $booking->suggested_price;
             $payment->amount = $response['purchase_units'][0]['payments']['capture']['value'];
             $payment->currency = $response['purchase_units'][0]['payments']['capture']['currency_code'];
             $payment->payer_name = $response['payer']['name']['given_name'];
@@ -74,8 +84,6 @@ class PaymentController extends Controller
             $payment->payment_method = "PayPal";
             $payment->save();
 
-            session()->forget("property_name");
-            session()->forget("quantity");
             return "Payment is successful";
         } else {
             return redirect()->route('cancel');
