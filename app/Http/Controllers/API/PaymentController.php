@@ -72,7 +72,7 @@ class PaymentController extends Controller
                 return response()->json(['msg' => 'Booking not found'], 404);
             }
             Property::where('id', $booking->property_id)->update(['status' => 'sold']);
-            $booking->status = 'confirmed';
+            // $booking->status = 'confirmed';
             $booking->payment_id = $response['id'];
             $booking->save();
 
