@@ -7,6 +7,9 @@ use Illuminate\Http\Request;
 use App\Models\Booking;
 use App\Models\Property;
 use Illuminate\Support\Facades\Log;
+use App\Mail\BookingConfirmedMail;
+use App\Mail\BookingCancelledMail;
+use Illuminate\Support\Facades\Mail;
 
 class SellerBookingController extends Controller
 {
@@ -53,26 +56,45 @@ class SellerBookingController extends Controller
 
     public function confirm($id)
     {
-        $booking = Booking::with('property')->findOrFail($id);
+        try {
+            $booking = Booking::with(['property', 'user'])->findOrFail($id);
 
-        if (!$booking->property || $booking->property->seller_id !== auth()->id()) {
-            return response()->json(['message' => 'Unauthorized'], 403);
+            if (!$booking->property || $booking->property->seller_id !== auth()->id()) {
+                return response()->json(['message' => 'Unauthorized'], 403);
+            }
+
+            $booking->status = 'confirmed';
+            $booking->save();
+
+            $property = $booking->property;
+            $property->status = 'sold';
+            $property->save();
+
+            // Send confirmation email to the customer
+            try {
+                Mail::to($booking->user->email)->send(new BookingConfirmedMail($booking));
+                
+                return response()->json([
+                    'message' => 'Booking confirmed, property marked as sold, and confirmation email sent to customer'
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Error sending confirmation email: ' . $e->getMessage());
+                
+                return response()->json([
+                    'message' => 'Booking confirmed and property marked as sold, but there was an issue sending the confirmation email'
+                ]);
+            }
+            
+        } catch (\Exception $e) {
+            Log::error('Error confirming booking: ' . $e->getMessage());
+            return response()->json(['message' => 'An error occurred while confirming the booking'], 500);
         }
-
-        $booking->status = 'confirmed';
-        $booking->save();
-
-        $property = $booking->property;
-        $property->status = 'sold';
-        $property->save();
-
-        return response()->json(['message' => 'Booking confirmed and property marked as sold']);
     }
 
     public function cancel($id)
     {
         try {
-            $booking = Booking::with('property')->findOrFail($id);
+            $booking = Booking::with(['property', 'user'])->findOrFail($id);
 
             if (!$booking->property || $booking->property->seller_id !== auth()->id()) {
                 return response()->json(['message' => 'Unauthorized'], 403);
@@ -81,13 +103,28 @@ class SellerBookingController extends Controller
             $booking->status = 'cancelled';
             $booking->save();
 
-            return response()->json([
-                'message' => 'Booking cancelled successfully',
-                'data' => [
-                    'booking_id' => $booking->id,
-                    'status' => $booking->status
-                ]
-            ]);
+            // Send cancellation email to the customer
+            try {
+                Mail::to($booking->user->email)->send(new BookingCancelledMail($booking));
+                
+                return response()->json([
+                    'message' => 'Booking cancelled successfully and notification email sent to customer',
+                    'data' => [
+                        'booking_id' => $booking->id,
+                        'status' => $booking->status
+                    ]
+                ]);
+            } catch (\Exception $e) {
+                Log::error('Error sending cancellation email: ' . $e->getMessage());
+                
+                return response()->json([
+                    'message' => 'Booking cancelled successfully, but there was an issue sending the notification email',
+                    'data' => [
+                        'booking_id' => $booking->id,
+                        'status' => $booking->status
+                    ]
+                ]);
+            }
 
         } catch (\Exception $e) {
             \Log::error("Error cancelling booking: " . $e->getMessage());
