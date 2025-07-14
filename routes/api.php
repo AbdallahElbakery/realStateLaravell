@@ -72,9 +72,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //payment
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
-    Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
-    Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 });
+Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
+Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 
 //properties
 Route::apiResource('properties', PropertyController::class)->only(['index', 'show']);
