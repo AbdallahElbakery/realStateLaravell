@@ -18,6 +18,7 @@ use App\Http\Controllers\Auth\logoutController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
+use App\Http\Controllers\API\OfferController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -97,3 +98,6 @@ Route::post('wishlist/{id}/{prop_id}', [WishlistController::class, 'store']);
 Route::get('/reviews', [ReviewController::class, 'index']);
 Route::post('/reviews', [ReviewController::class, 'store']);
 Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBySeller']);
+
+//Mail
+Route::post('/offers/{id}/accept', [OfferController::class, 'accept']);
