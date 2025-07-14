@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Models\Booking;
+use App\Models\Property;
+
 use Srmklive\PayPal\Services\PayPal as PayPalClient;
 
 use App\Http\Controllers\Controller;
@@ -22,6 +24,7 @@ class PaymentController extends Controller
         $provider = new PayPalClient;
         $provider->setApiCredentials(config("paypal"));
         $provider->getAccessToken();
+        // dd($suggested_price);
         $response = $provider->createOrder([
             "intent" => "CAPTURE",
             "application_context" => [
@@ -32,7 +35,7 @@ class PaymentController extends Controller
                 [
                     "amount" => [
                         "currency_code" => "USD",
-                        "value" => $suggested_price
+                        "value" => $suggested_price,
                     ]
                 ]
             ]
@@ -68,16 +71,17 @@ class PaymentController extends Controller
             if (!$booking) {
                 return response()->json(['msg' => 'Booking not found'], 404);
             }
-            $booking->status = 'paid';
+            Property::where('id', $booking->property_id)->update(['status' => 'sold']);
+            $booking->status = 'confirmed';
             $booking->payment_id = $response['id'];
             $booking->save();
-            
+
             $payment = new Payment;
             $payment->payment_id = $response['id'];
             $payment->property_id = $booking->property_id;
             $payment->quantity = $booking->suggested_price;
-            $payment->amount = $response['purchase_units'][0]['payments']['capture']['value'];
-            $payment->currency = $response['purchase_units'][0]['payments']['capture']['currency_code'];
+            $payment->amount = $response['purchase_units'][0]['payments']['captures'][0]['amount']['value'];
+            $payment->currency = $response['purchase_units'][0]['payments']['captures'][0]['amount']['currency_code'];
             $payment->payer_name = $response['payer']['name']['given_name'];
             $payment->payer_email = $response['payer']['email_address'];
             $payment->payment_status = $response['status'];
