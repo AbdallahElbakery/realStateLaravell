@@ -72,6 +72,7 @@ class PaymentController extends Controller
             }
             Property::where('id', $booking->property_id)->update(['status' => 'sold']);
             $booking->payment_id = $response['id'];
+            $booking->status='paid';
             $booking->save();
 
             $payment = new Payment;

@@ -87,7 +87,7 @@ class SellerController extends Controller
         }
 
         if ($request->current_password !== $user->password) {
-            return response()->json(['msg' => 'Current password is incorrect'], 422);
+            return response()->json(['msg' => 'Current password is incorrect'], 400);
         }
 
         if ($request->newPass !== $request->confirmPassword) {
