@@ -30,6 +30,7 @@ class PropertyResource extends JsonResource
             "area" => $this->area,
             "bedrooms" => $this->bedrooms,
             "bathrooms" => $this->bathrooms,
+            "status" => $this->status,
             "date" => $this->created_at,
             "category" => Category::where('id', $this->category_id)->value('category_name'),
             "seller" => [

@@ -13,7 +13,9 @@
         "srmklive/paypal": "~3.0"
     },
     "require-dev": {
+        "barryvdh/laravel-debugbar": "^3.15",
         "fakerphp/faker": "^1.23",
+        "lanin/laravel-api-debugger": "^4.0",
         "laravel/pail": "^1.2.2",
         "laravel/pint": "^1.13",
         "laravel/sail": "^1.41",
