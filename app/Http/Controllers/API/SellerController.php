@@ -161,8 +161,15 @@ class SellerController extends Controller
         if (!$property) {
             return response()->json(['msg' => 'this property not owned to this seller'], 404);
         }
-
-        $property->update($request->validated());
+        $validatedData=$request->validated();
+        
+        if ($request->hasFile('image')) {
+        $file = $request->file('image');
+        $filename = time() . '_' . $file->getClientOriginalName();
+        $path = $file->storeAs('properties', $filename, 'public');
+        $validatedData['image'] = $path;
+        }
+        $property->update($validatedData);
         return response()->json(["msg" => "updated property with id " . $property->id . " owned to seller " . $seller->user_id, "Propert" => $property], 200);
     }
 

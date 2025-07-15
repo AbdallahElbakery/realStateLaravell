@@ -36,7 +36,7 @@ class StoreProperty extends FormRequest
             "city" => "required",
             "location" => "required",
             "country" => "required",
-            // "image" => "required"
+            // "image" => "required",
             "address_id" => "required|exists:addresses,id",
         ];
 

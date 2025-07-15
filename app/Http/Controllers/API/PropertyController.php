@@ -33,11 +33,11 @@ class PropertyController extends Controller
             "country" => $request->country,
             "city" => $request->city,
         ]);
-    $propertyData = $request->validated();
-    $propertyData['address_id'] = $address->id;
+        $propertyData = $request->validated();
+        $propertyData['address_id'] = $address->id;
 
-    $property = Property::create($propertyData);        
-    $createdProperty = new PropertyResource($property);
+        $property = Property::create($propertyData);
+        $createdProperty = new PropertyResource($property);
         return response()->json(["message" => "property created successfuly", "new property" => $createdProperty], 200);
     }
 

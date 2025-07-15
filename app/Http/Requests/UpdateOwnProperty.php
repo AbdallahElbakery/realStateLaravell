@@ -22,14 +22,11 @@ class UpdateOwnProperty extends FormRequest
     public function rules(): array
     {
         return [
-            // "image" => "required",
+            "image" => "required",
             "name" => "required|max:255",
             "description" => "required",
             "citynum" => "required",
             "price" => "required",
-            // "country" => "required",
-            // "city" => "required",
-            // "location" => "required",
             "area" => "required",
             "bedrooms" => "required",
             "bathrooms" => "required",
