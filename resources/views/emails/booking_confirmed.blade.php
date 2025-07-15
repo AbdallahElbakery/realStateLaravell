@@ -173,7 +173,8 @@
         <div style="text-align: center; margin: 30px 0;">
             <a href="http://localhost:4200/user-bookings" class="btn">View My Bookings</a>
             <a href="http://localhost:4200/properties/{{ $property->id }}" class="btn">View Property Details</a>
-            <a href="" class="btn">Continue to Payment</a>
+            
+            
         </div>
 
         <div class="footer">

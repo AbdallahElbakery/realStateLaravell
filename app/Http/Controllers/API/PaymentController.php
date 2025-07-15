@@ -98,7 +98,7 @@ class PaymentController extends Controller
 
     public function cancel()
     {
-        return "payment is canceled";
+        return "payment is Completed";
     }
 }
 
