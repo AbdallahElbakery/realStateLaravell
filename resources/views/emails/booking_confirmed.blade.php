@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -14,12 +15,14 @@
             padding: 20px;
             background-color: #f4f4f4;
         }
+
         .container {
             background-color: white;
             padding: 30px;
             border-radius: 10px;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
         }
+
         .header {
             text-align: center;
             background: linear-gradient(135deg, #667eea 0%, #1e40af 100%);
@@ -28,10 +31,12 @@
             border-radius: 10px 10px 0 0;
             margin: -30px -30px 30px -30px;
         }
+
         .success-icon {
             font-size: 48px;
             margin-bottom: 10px;
         }
+
         .property-details {
             background-color: #f8f9fa;
             padding: 20px;
@@ -39,12 +44,14 @@
             margin: 20px 0;
             border-left: 4px solid #1e40af;
         }
+
         .property-title {
             font-size: 20px;
             font-weight: bold;
             color: #2c3e50;
             margin-bottom: 15px;
         }
+
         .detail-row {
             display: flex;
             justify-content: space-between;
@@ -52,13 +59,16 @@
             padding: 5px 0;
             border-bottom: 1px solid #eee;
         }
+
         .detail-label {
             font-weight: bold;
             color: #555;
         }
+
         .detail-value {
             color: #2c3e50;
         }
+
         .price-highlight {
             background-color: #d4edda;
             color: #1e40af;
@@ -69,6 +79,7 @@
             font-weight: bold;
             margin: 15px 0;
         }
+
         .footer {
             text-align: center;
             margin-top: 30px;
@@ -76,20 +87,23 @@
             border-top: 1px solid #eee;
             color: #666;
         }
+
         .btn {
             display: inline-block;
             padding: 12px 24px;
             background-color: #1e40af;
-            color: white;
+            color: #ffffffff !important;
             text-decoration: none;
             border-radius: 5px;
             margin: 10px 5px;
         }
+
         .btn:hover {
-            background-color: #3b82f6;
+            background-color: #003385ff;
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -99,37 +113,38 @@
         </div>
 
         <h2>Hello {{ $user->name }} 👋</h2>
-        
+
         <p>Great news! Your booking for the following property has been <strong>confirmed</strong> by the seller.</p>
 
         <div class="property-details">
             <div class="property-title">{{ $property->title }}</div>
-            
+
             <div class="detail-row">
-                <span class="detail-label">Property Type:</span>
-                <span class="detail-value">{{ $property->category->name ?? 'N/A' }}</span>
+                <span class="detail-label">Property:</span>
+                <span class="detail-value">{{ $property->name ?? 'N/A' }}</span>
             </div>
-            
+
             <div class="detail-row">
                 <span class="detail-label">Location:</span>
-                <span class="detail-value">{{ $property->address->city ?? 'N/A' }}, {{ $property->address->country ?? 'N/A' }}</span>
+                <span class="detail-value">{{ $property->address->city ?? 'N/A' }},
+                    {{ $property->address->country ?? 'N/A' }}</span>
             </div>
-            
+
             <div class="detail-row">
                 <span class="detail-label">Bedrooms:</span>
                 <span class="detail-value">{{ $property->bedrooms ?? 'N/A' }}</span>
             </div>
-            
+
             <div class="detail-row">
                 <span class="detail-label">Bathrooms:</span>
                 <span class="detail-value">{{ $property->bathrooms ?? 'N/A' }}</span>
             </div>
-            
+
             <div class="detail-row">
                 <span class="detail-label">Area:</span>
                 <span class="detail-value">{{ $property->area ?? 'N/A' }} m²</span>
             </div>
-            
+
             <div class="detail-row">
                 <span class="detail-label">Original Price:</span>
                 <span class="detail-value">{{ number_format($property->price) }} EGP</span>
@@ -171,10 +186,7 @@
         </div>
 
         <div style="text-align: center; margin: 30px 0;">
-            <a href="http://localhost:4200/user-bookings" class="btn">View My Bookings</a>
-            <a href="http://localhost:4200/properties/{{ $property->id }}" class="btn">View Property Details</a>
-            
-            
+            <a href="http://localhost:4200/user-bookings" class="btn bg-primary text-light">View My Bookings</a>
         </div>
 
         <div class="footer">
@@ -187,4 +199,5 @@
         </div>
     </div>
 </body>
-</html> 
+
+</html>
