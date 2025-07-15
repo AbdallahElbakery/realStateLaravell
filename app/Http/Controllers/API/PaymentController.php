@@ -41,7 +41,6 @@ class PaymentController extends Controller
             ]
         ]);
 
-        // dd($response);
         if (isset($response['id']) && $response['id'] != null) {
             $booking->paypal_order_token = $response['id'];
             $booking->save();
@@ -72,7 +71,6 @@ class PaymentController extends Controller
                 return response()->json(['msg' => 'Booking not found'], 404);
             }
             Property::where('id', $booking->property_id)->update(['status' => 'sold']);
-            // $booking->status = 'confirmed';
             $booking->payment_id = $response['id'];
             $booking->save();
 
@@ -88,9 +86,9 @@ class PaymentController extends Controller
             $payment->payment_method = "PayPal";
             $payment->save();
 
-            return "Payment is successful";
+        return view('payment.success');
         } else {
-            return redirect()->route('cancel');
+        return view('payment.cancel');
         }
 
     }
@@ -98,7 +96,7 @@ class PaymentController extends Controller
 
     public function cancel()
     {
-        return "payment is Completed";
+        return view('payment.cancel');
     }
 }
 
