@@ -37,10 +37,12 @@ class SellerController extends Controller
     public function show()
     {
         $user = auth()->user();
-        $singleSeller = Seller::where('user_id', $user->id)->first();
         if ($user->role != 'seller') {
             return response()->json(['message' => 'this user is not a seller'], 404);
         }
+
+        $singleSeller = Seller::where('user_id', $user->id)->first();
+
         if (!$singleSeller) {
             return response()->json(["msg" => "This seller is not found"], 404);
         }
@@ -52,10 +54,13 @@ class SellerController extends Controller
     public function update(UpdateSeller $request)
     {
         $user = auth()->user();
+
         $seller = Seller::where('user_id', $user->id)->first();
+
         if (!$seller) {
             return response()->json(["msg" => "This seller is not found"], 404);
         }
+
         $seller->update($request->validated());
         $updatedSeller = new SellerResource($seller);
 
@@ -69,11 +74,23 @@ class SellerController extends Controller
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not found'], 404);
         }
-        $seller->update([
-            'company_name' => $request->company_name,
-            // 'logo' => $request->logo,
-            'about_company' => $request->about_company,
+        $request->validate([
+            'company_name' => 'required',
+            'about_company' => 'required',
+            'logo' => 'required',
         ]);
+        $updateData = [
+            'company_name' => $request->company_name,
+            'about_company' => $request->about_company,
+        ];
+        if ($request->hasFile('logo')) {
+            $file = $request->file('logo');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->move(public_path('uploads'), $filename);
+            $updateData['logo'] = $filename;
+        }
+
+        $seller->update($updateData);
         $updated = new SellerResource($seller);
         return response()->json(['message' => 'updated', 'updated successfully' => $updated]);
     }
@@ -109,8 +126,8 @@ class SellerController extends Controller
         if (!$user) {
             return response()->json(['msg' => 'this seller is not found'], 404);
         }
-        $file= $request->file('photo');
-        $file_name=time() . '_' . $file->getClientOriginalName();
+        $file = $request->file('photo');
+        $file_name = time() . '_' . $file->getClientOriginalName();
         $path = $file->move(public_path('uploads'), $file_name);
 
         $user->update([
@@ -161,8 +178,15 @@ class SellerController extends Controller
         if (!$property) {
             return response()->json(['msg' => 'this property not owned to this seller'], 404);
         }
+        $validatedData = $request->validated();
 
-        $property->update($request->validated());
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = time() . '_' . $file->getClientOriginalName();
+            $path = $file->storeAs('properties', $filename, 'public');
+            $validatedData['image'] = $path;
+        }
+        $property->update($validatedData);
         return response()->json(["msg" => "updated property with id " . $property->id . " owned to seller " . $seller->user_id, "Propert" => $property], 200);
     }
 
