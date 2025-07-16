@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::delete('seller', [SellerController::class, 'destroy']);
 
     //seller-profile
-    Route::patch('seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
+    Route::match(['POST', 'PATCH'], 'seller/update-company-details', [SellerController::class, 'updateCompanyDetails']);
     Route::patch('seller/change-password', [SellerController::class, 'changePassword']);
     Route::match(['POST', 'PATCH'], 'seller/update-personal-details', [SellerController::class, 'editPersonalInfo']);
     Route::post('seller-add-prop', [SellerController::class, 'addOwnProperty']);
