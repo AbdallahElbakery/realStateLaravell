@@ -22,6 +22,11 @@ use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\OfferController;
 use App\Http\Controllers\API\Admin\AdminUserController;
+use App\Http\Controllers\API\Admin\PropertyAdminController;
+use App\Http\Controllers\API\Admin\CategoryAdminController;
+use App\Http\Controllers\API\Admin\PaymentAdminController;
+use App\Http\Controllers\API\Admin\ReviewAdminController;
+use App\Http\Controllers\API\Admin\SellerAdminController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -79,6 +84,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     //admin
     Route::apiResource('admin/users',AdminUserController::class);
+    Route::apiResource('admin/properties',PropertyAdminController::class);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
