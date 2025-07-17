@@ -85,6 +85,7 @@ Route::middleware('auth:sanctum')->group(function () {
     //admin
     Route::apiResource('admin/users',AdminUserController::class);
     Route::apiResource('admin/properties',PropertyAdminController::class);
+    Route::apiResource('admin/payments',PaymentAdminController::class);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
