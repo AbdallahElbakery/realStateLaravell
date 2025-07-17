@@ -3,6 +3,7 @@
 use App\Http\Controllers\API\WishlistController;
 use App\Http\Controllers\API\CategoryController;
 use Illuminate\Http\Request;
+use Illuminate\Routing\Router;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\API\ComplaintsController;
 use App\Http\Controllers\API\NotificationController;
@@ -15,6 +16,7 @@ use App\Http\Controllers\Auth\UserRegisterController;
 use App\Http\Controllers\Auth\SellerRegisterController;
 use App\Http\Controllers\Auth\loginController;
 use App\Http\Controllers\Auth\logoutController;
+use App\Http\Controllers\Auth\AdminRegisterController;
 use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
@@ -28,6 +30,7 @@ use App\Http\Controllers\API\OfferController;
 Route::post('login', [loginController::class, 'login']);
 Route::post('register/user', [UserRegisterController::class, 'register']);
 Route::post('register/seller', [SellerRegisterController::class, 'register']);
+Route::post('register/admin',[AdminRegisterController::class,'registerAdmin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //logout
@@ -101,3 +104,7 @@ Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBy
 
 //Mail
 Route::post('/offers/{id}/accept', [OfferController::class, 'accept']);
+
+
+//admin
+
