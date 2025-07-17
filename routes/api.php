@@ -21,6 +21,7 @@ use App\Http\Controllers\API\ReviewController;
 use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\OfferController;
+use App\Http\Controllers\API\Admin\AdminUserController;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -75,6 +76,9 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //payment
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
+    
+    //admin
+    Route::apiResource('admin/users',AdminUserController::class);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
