@@ -83,15 +83,15 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
 
     //admin
-    Route::prefix('admin')->group(function () {
-        Route::apiResource('users', AdminUserController::class);
-        Route::apiResource('properties', PropertyAdminController::class);
-        Route::apiResource('payments', PaymentAdminController::class);
-        Route::apiResource('sellers', SellerAdminController::class);
-        Route::apiResource('reviews', ReviewAdminController::class);
-        Route::apiResource('categories', CategoryAdminController::class);
-    });
-
+    
+});
+Route::middleware(['auth:sanctum','checkUserRole'])->prefix('admin')->group(function () {
+    Route::apiResource('users', AdminUserController::class);
+    Route::apiResource('properties', PropertyAdminController::class);
+    Route::apiResource('payments', PaymentAdminController::class);
+    Route::apiResource('sellers', SellerAdminController::class);
+    Route::apiResource('reviews', ReviewAdminController::class);
+    Route::apiResource('categories', CategoryAdminController::class);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
