@@ -36,7 +36,7 @@ use App\Http\Controllers\API\Admin\SellerAdminController;
 Route::post('login', [loginController::class, 'login']);
 Route::post('register/user', [UserRegisterController::class, 'register']);
 Route::post('register/seller', [SellerRegisterController::class, 'register']);
-Route::post('register/admin',[AdminRegisterController::class,'registerAdmin']);
+Route::post('register/admin', [AdminRegisterController::class, 'registerAdmin']);
 
 Route::middleware('auth:sanctum')->group(function () {
     //logout
@@ -81,11 +81,17 @@ Route::middleware('auth:sanctum')->group(function () {
 
     //payment
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
-    
+
     //admin
-    Route::apiResource('admin/users',AdminUserController::class);
-    Route::apiResource('admin/properties',PropertyAdminController::class);
-    Route::apiResource('admin/payments',PaymentAdminController::class);
+    Route::prefix('admin')->group(function () {
+        Route::apiResource('users', AdminUserController::class);
+        Route::apiResource('properties', PropertyAdminController::class);
+        Route::apiResource('payments', PaymentAdminController::class);
+        Route::apiResource('sellers', SellerAdminController::class);
+        Route::apiResource('reviews', ReviewAdminController::class);
+        Route::apiResource('categories', CategoryAdminController::class);
+    });
+
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');

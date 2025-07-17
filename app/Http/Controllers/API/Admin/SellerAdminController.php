@@ -3,7 +3,10 @@
 namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Seller;
 use Illuminate\Http\Request;
+use App\Http\Requests\StoreSeller;
+use App\Http\Resources\SellerResource;
 
 class SellerAdminController extends Controller
 {
@@ -12,15 +15,19 @@ class SellerAdminController extends Controller
      */
     public function index()
     {
-        //
+        $sellers = Seller::all();
+        $allSeller = SellerResource::collection($sellers);
+        return response()->json(["message" => 'returned all sellers for admin', "allsellers" => $allSeller]);
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(StoreSeller $request)
     {
-        //
+        $seller = Seller::create($request->validated());
+        $createdSeller = new SellerResource($seller);
+        return response()->json(["Message" => "Created successflly", "created seller" => $createdSeller], 201);
     }
 
     /**
@@ -28,7 +35,8 @@ class SellerAdminController extends Controller
      */
     public function show(string $id)
     {
-        //
+        $seller = Seller::find($id);
+        return response()->json(["seller" => $seller], 200);
     }
 
     /**
@@ -44,6 +52,11 @@ class SellerAdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $seller = Seller::find($id);
+        if (!$seller) {
+            return response()->json(["message" => "this seller is not found"], 404);
+        }
+        $seller->delete();
+        return response()->json(["message" => "deleted seller successfully by admin"], 200);
     }
 }

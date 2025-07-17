@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Models\Review;
 
 class ReviewAdminController extends Controller
 {
@@ -12,15 +13,8 @@ class ReviewAdminController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(Request $request)
-    {
-        //
+        $reviews = Review::all();
+        return response()->json(["message" => "returned all reviews", "all reviews" => $reviews]);
     }
 
     /**
@@ -28,15 +22,11 @@ class ReviewAdminController extends Controller
      */
     public function show(string $id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
+        $review = Review::find($id);
+        if (!$review) {
+            return response()->json(["message" => "this review is not found"], 404);
+        }
+        return response()->json(["message" => "returned review", "review" => $review]);
     }
 
     /**
@@ -44,6 +34,11 @@ class ReviewAdminController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $review = Review::find($id);
+        if (!$review) {
+            return response()->json(["message" => "this review is not found"], 404);
+        }
+        $review->delete();
+        return response()->json(["message" => "deleted sucsessfully review -> '" . $review->comment . "'", "review" => $review]);
     }
 }
