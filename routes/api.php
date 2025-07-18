@@ -27,6 +27,7 @@ use App\Http\Controllers\API\Admin\CategoryAdminController;
 use App\Http\Controllers\API\Admin\PaymentAdminController;
 use App\Http\Controllers\API\Admin\ReviewAdminController;
 use App\Http\Controllers\API\Admin\SellerAdminController;
+use App\Http\Middleware\checkRole;
 
 // Route::get('/user', function (Request $request) {
 //     return $request->user();
@@ -83,9 +84,9 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
 
     //admin
-    
+
 });
-Route::middleware(['auth:sanctum','checkUserRole'])->prefix('admin')->group(function () {
+Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(function () {
     Route::apiResource('users', AdminUserController::class);
     Route::apiResource('properties', PropertyAdminController::class);
     Route::apiResource('payments', PaymentAdminController::class);

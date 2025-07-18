@@ -2,10 +2,9 @@
 
 namespace App\Providers;
 
+use App\Http\Middleware\checkRole;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Foundation\Configuration\Middleware;
-
-use App\Http\Middleware\CheckUserRole;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -20,10 +19,8 @@ class AppServiceProvider extends ServiceProvider
     /**
      * Bootstrap any application services.
      */
-    public function boot(Middleware $middleware): void
+    public function boot(): void
     {
-        $middleware->alias([
-            'checkUserRole'=>CheckUserRole::class,
-        ]);
+        
     }
 }

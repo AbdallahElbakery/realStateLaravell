@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class CheckUserRole
+class checkRole
 {
     /**
      * Handle an incoming request.
@@ -15,10 +15,12 @@ class CheckUserRole
      */
     public function handle(Request $request, Closure $next): Response
     {
-
-        if(!auth()->check()||auth()->user()->role!='admin'){
-            abort(403);
+        if(!auth()->check() || auth()->user()->role!=='admin'){
+            return response()->json(['message'=>'u are not authorized to reach this page !'],403);
         }
+
         return $next($request);
     }
 }
+
+
