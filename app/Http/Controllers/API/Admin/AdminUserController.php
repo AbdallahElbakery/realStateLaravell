@@ -9,6 +9,7 @@ use App\Http\Requests\UpdateUserRequest;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Address;
+use App\Http\Resources\UserResource;
 
 class AdminUserController extends Controller
 {
@@ -18,7 +19,8 @@ class AdminUserController extends Controller
     public function index()
     {
         $users = User::all();
-        return response()->json(["all users" => $users], 200);
+        $allUsers = UserResource::collection($users);
+        return response()->json(["allUsers" => $allUsers], 200);
     }
 
     /**
@@ -51,7 +53,8 @@ class AdminUserController extends Controller
     public function show(string $id)
     {
         $user = User::find($id);
-        return response()->json(['user' => $user], 200);
+        $singlUser = new UserResource($user);
+        return response()->json(['user' => $singlUser], 200);
     }
 
     /**
@@ -60,6 +63,11 @@ class AdminUserController extends Controller
     public function update(UpdateUserRequest $request, string $id)
     {
         $user = User::find($id);
+        // if($request->hasFile('photo')){
+        //     $photo= $request->file('photo');
+        //     $photoname=time().'_'.$photo->getClientOriginalName();
+        //     $path=$photo->move(public_path('uploads'),$photoname);
+        // }
         $user->update(
             [
                 'name' => $request->name,
