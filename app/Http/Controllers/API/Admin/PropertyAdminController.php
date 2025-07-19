@@ -1,17 +1,17 @@
 <?php
 
-namespace App\Http\Controllers\API;
+namespace App\Http\Controllers\Api\Admin;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 use App\Models\Property;
-use App\Models\Address;
-use App\Models\User;
 use App\Http\Resources\PropertyResource;
 use App\Http\Requests\StoreProperty;
 use App\Http\Requests\UpdateProperty;
+use App\Models\Address;
 
-class PropertyController extends Controller
+class PropertyAdminController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -20,7 +20,7 @@ class PropertyController extends Controller
     {
         $properties = Property::all();
         $allProperties = PropertyResource::collection($properties);
-        return response()->json(["message" => "returned successfully all properties", "data" => $allProperties], 200);
+        return response()->json(["message" => "returned successfully", "properties" => $allProperties]);
     }
 
     /**
@@ -84,12 +84,9 @@ class PropertyController extends Controller
     {
         $property = Property::find($id);
         if (!$property) {
-            return response()->json(["message" => "not fond this property with id " . $id], 404);
+            return response()->json(["message"=> "this property is not found"],404);
         }
-
         $property->delete();
-        $deletedProperty = new PropertyResource($property);
-
-        return response()->json(["message" => "deleted successfully this property with id " . $id, "deleted property" => $deletedProperty], 200);
+        return response()->json(["message"=> "deleted successfully proeprty with id ".$id],200);
     }
 }

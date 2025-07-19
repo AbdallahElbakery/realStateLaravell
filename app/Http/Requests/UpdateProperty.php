@@ -36,7 +36,7 @@ class UpdateProperty extends FormRequest
             "city" => "required",
             "country" => "required",
             "location" => "required",
-            "image" => "required",
+            // "image" => "required",
         ];
     }
 }

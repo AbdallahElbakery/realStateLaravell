@@ -9,6 +9,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use App\Models\Seller;
+use App\Models\Admin;
 use App\Models\Wishlist;
 
 class User extends Authenticatable
@@ -71,6 +72,10 @@ class User extends Authenticatable
     public function address()
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function admin(){
+        return $this->hasOne(Admin::class);
     }
 
 }

@@ -22,7 +22,7 @@ class StoreSeller extends FormRequest
     public function rules(): array
     {
         return [
-            "user_id" => "required",
+            // "user_id" => "required",
             "company_name" => "required",
             "logo" => "required",
             // "personal_id_image" => "required",
