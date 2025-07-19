@@ -20,10 +20,6 @@ use App\Http\Controllers\API\AddressController;
 use App\Http\Controllers\API\PaymentController;
 use App\Http\Controllers\API\OfferController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
-
 //auth
 Route::post('login', [loginController::class, 'login']);
 Route::post('register/user', [UserRegisterController::class, 'register']);
@@ -32,6 +28,9 @@ Route::post('register/seller', [SellerRegisterController::class, 'register']);
 Route::middleware('auth:sanctum')->group(function () {
     //logout
     Route::post('logout', [logoutController::class, 'logout']);
+
+    //user
+    Route::get('/me', [UserController::class, 'me']);
 
     //user-bookings
     Route::apiResource('user/bookings', BookingController::class);

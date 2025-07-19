@@ -7,9 +7,20 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\UserResource;
+use App\Models\Address;
+use Illuminate\Support\Facades\Auth;
 
 class UserController extends Controller
 {
+    public function me()
+    {
+        $user = Auth::user()->load('address');
+        return response()->json([
+            "message" => "User data retrieved successfully",
+            "user" => new UserResource(Auth::user()),
+        ]);
+    }
     /**
      * Display a listing of the resource.
      */
@@ -35,9 +46,10 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(string $user_id)
+    public function show()
     {
-        $user = User::find($user_id);
+        $user = Auth::user();
+        // $user = User::find($user_id);
         if (!$user) {
             return response()->json(["msg" => "This User is not found"], 404);
         }
