@@ -45,5 +45,9 @@ class Property extends Model
     {
         return $this->hasMany(Booking::class);
     }
+    public function category()
+    {
+        return $this->belongsTo(Category::class);
+    }
 
 }
