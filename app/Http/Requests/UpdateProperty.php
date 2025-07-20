@@ -23,19 +23,21 @@ class UpdateProperty extends FormRequest
     {
         return [
             "name" => "required|max:255",
-            "description" => "required|min:50",
+            "description" => "required",
             "price" => "required|numeric|min:1",
             "citynum" => "required",
             "purpose" => "required",
             "area" => "required|integer|min:1",
             "bedrooms" => "required|integer|min:0",
             "bathrooms" => "required|integer|min:0",
-            "created_at" => "required",
+            // "created_at" => "required",
             "category_id" => "required|exists:categories,id",
             "seller_id" => "required",
             "city" => "required",
             "country" => "required",
-            "location" => "required",
+            "status" => "required",
+            "payment_method" => "required",
+            // "location" => "required",
             // "image" => "required",
         ];
     }

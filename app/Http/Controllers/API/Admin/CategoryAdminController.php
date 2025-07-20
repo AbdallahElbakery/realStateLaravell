@@ -37,6 +37,14 @@ class CategoryAdminController extends Controller
         return response()->json(["message" => "updated category successfully by admin", "category" => $category]);
     }
 
+    public function show(string $id)
+    {
+        $category = Category::find($id);
+        if(!$category){
+            return response()->json(["message"=> "this category is not found"],404);
+        }
+        return response()->json(["message" => "returned category", "category" => $category]);
+    }
     /**
      * Remove the specified resource from storage.
      */

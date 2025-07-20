@@ -24,9 +24,12 @@ class PaymentResource extends JsonResource
             "quantity" => $this->quantity,
             "amount" => $this->amount,
             // "currency" => $this->currency,
+            "payer_name" => $this->payer_name,
+            "payment_status" => $this->payment_status,
             "payer_email" => $this->payer_email,
             "payment_method" => $this->payment_method,
             "date" => $this->created_at,
+            "updated_at" => $this->updated_at,
         ];
     }
 }

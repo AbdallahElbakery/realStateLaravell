@@ -29,9 +29,9 @@ class PropertyAdminController extends Controller
     public function store(StoreProperty $request)
     {
         $address = Address::create([
-            "full_address" => $request->location,
             "country" => $request->country,
             "city" => $request->city,
+            "full_address" => $request->country.','.$request->city,
         ]);
         $propertyData = $request->validated();
         $propertyData['address_id'] = $address->id;
@@ -70,7 +70,7 @@ class PropertyAdminController extends Controller
         $address->update([
             "city" => $request->city,
             "country" => $request->country,
-            "full_address" => $request->location,
+            "full_address" => $request->country.','.$request->city,
         ]);
         $property->update($request->validated());
         $updatedProperty = new PropertyResource($property);
