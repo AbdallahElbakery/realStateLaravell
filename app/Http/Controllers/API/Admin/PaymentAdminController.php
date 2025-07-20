@@ -25,7 +25,8 @@ class PaymentAdminController extends Controller
     public function show(string $id)
     {
         $payment = Payment::find($id);
-        return response()->json(["message" => "returned this payment", "payment" => $payment]);
+        $paymentDetails = new PaymentResource($payment);
+        return response()->json(["message" => "returned this payment", "payment" => $paymentDetails]);
     }
 
 

@@ -23,31 +23,32 @@ class StoreProperty extends FormRequest
     {
         return [
             "name" => "required|max:255",
-            "description" => "required|min:50",
+            "description" => "required",
             "citynum" => "required",
             "price" => "required",
             "purpose" => "required",
             "area" => "required",
             "bedrooms" => "required",
             "bathrooms" => "required",
-            "created_at" => "required",
             "category_id" => "required|exists:categories,id",
             "seller_id" => "required|exists:sellers,user_id",
             "city" => "required",
-            "location" => "required",
             "country" => "required",
+            "payment_method" => "required",
+            // "location" => "required",
             // "image" => "required",
-            "address_id" => "required|exists:addresses,id",
+            // "address_id" => "required|exists:addresses,id",
         ];
 
-        
+
     }
-    public function messages():array{
-        return[
-            "seller_id"=> "this seller is not found"
+    public function messages(): array
+    {
+        return [
+            "seller_id" => "this seller is not found"
         ];
 
-        
+
     }
 
 }
