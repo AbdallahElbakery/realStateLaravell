@@ -5,7 +5,7 @@ namespace App\Http\Controllers\Api\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use App\Models\Review;
-
+use App\Http\Resources\ReviewResource;
 class ReviewAdminController extends Controller
 {
     /**
@@ -14,7 +14,8 @@ class ReviewAdminController extends Controller
     public function index()
     {
         $reviews = Review::all();
-        return response()->json(["message" => "returned all reviews", "all reviews" => $reviews]);
+        $allReviews = ReviewResource::collection($reviews);
+        return response()->json(["message" => "returned all reviews", "allReviews" => $allReviews]);
     }
 
     /**
@@ -26,7 +27,8 @@ class ReviewAdminController extends Controller
         if (!$review) {
             return response()->json(["message" => "this review is not found"], 404);
         }
-        return response()->json(["message" => "returned review", "review" => $review]);
+        $reviewDetails = new ReviewResource($review);
+        return response()->json(["message" => "returned review", "review" => $reviewDetails]);
     }
 
     /**
