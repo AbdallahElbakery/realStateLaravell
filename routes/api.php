@@ -83,16 +83,17 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
 
     //admin
+    Route::middleware('checkRole')->prefix('admin')->group(function () {
+        Route::apiResource('users', AdminUserController::class);
+        Route::apiResource('properties', PropertyAdminController::class);
+        Route::apiResource('payments', PaymentAdminController::class);
+        Route::apiResource('sellers', SellerAdminController::class);
+        Route::apiResource('reviews', ReviewAdminController::class);
+        Route::apiResource('categories', CategoryAdminController::class);
+    });
+});
 
-});
-Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(function () {
-    Route::apiResource('users', AdminUserController::class);
-    Route::apiResource('properties', PropertyAdminController::class);
-    Route::apiResource('payments', PaymentAdminController::class);
-    Route::apiResource('sellers', SellerAdminController::class);
-    Route::apiResource('reviews', ReviewAdminController::class);
-    Route::apiResource('categories', CategoryAdminController::class);
-});
+//payment
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 
@@ -121,7 +122,3 @@ Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBy
 
 //Mail
 Route::post('/offers/{id}/accept', [OfferController::class, 'accept']);
-
-
-//admin
-
