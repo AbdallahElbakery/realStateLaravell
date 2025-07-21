@@ -60,7 +60,7 @@ class AdminUserController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateUserRequest $request, string $id)
+    public function update(Request $request, string $id)
     {
         $user = User::find($id);
         // if($request->hasFile('photo')){
@@ -83,7 +83,6 @@ class AdminUserController extends Controller
                 'role' => $request->role,
             ]
         );
-        $user->save();
         return response()->json(['message' => 'user updated successfully', 'user' => $user], 200);
     }
 
