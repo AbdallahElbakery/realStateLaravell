@@ -27,6 +27,11 @@ use App\Http\Controllers\API\Admin\CategoryAdminController;
 use App\Http\Controllers\API\Admin\PaymentAdminController;
 use App\Http\Controllers\API\Admin\ReviewAdminController;
 use App\Http\Controllers\API\Admin\SellerAdminController;
+use App\Http\Controllers\ChatController;
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
 use App\Http\Controllers\API\Admin\BookingAdminController;
 use App\Http\Controllers\API\Admin\AdminProfileController;
 use App\Http\Middleware\checkRole;
@@ -126,3 +131,6 @@ Route::get('/reviews/seller/{sellerId}', [ReviewController::class, 'getReviewsBy
 
 //Mail
 Route::post('/offers/{id}/accept', [OfferController::class, 'accept']);
+
+//chat
+Route::post('/chat', [ChatController::class, 'ask']);

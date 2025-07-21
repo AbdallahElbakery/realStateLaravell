@@ -1,13 +1,13 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ChatController;
+
+
 
 
 Route::get('/', function () {
     return view('welcome');
 });
-// Route::get('api/payment/success',[PaymentController::class, 'success'] ,function () {return view('payment.success');})->name('success');
 
-// Route::get('api/payment/cancel', function () {
-//     return view('payment.cancel');
-// })->name('cancel');
+Route::get('/chat', [ChatController::class, 'index'])->name('chat.index');
