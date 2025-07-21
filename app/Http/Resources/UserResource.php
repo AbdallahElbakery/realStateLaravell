@@ -24,10 +24,11 @@ class UserResource extends JsonResource
             'date' => $this->created_at,
             'updated' => $this->updated_at,
             'address' => [
+                'address_id' => $this->address->id,
                 'city' => $this->address->city,
                 'country' => $this->address->country,
             ],
-            'address_id' => $this->address->id,
+            // 'address_id' => $this->address->id,
         ];
     }
 }
