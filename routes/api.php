@@ -27,6 +27,7 @@ use App\Http\Controllers\API\Admin\CategoryAdminController;
 use App\Http\Controllers\API\Admin\PaymentAdminController;
 use App\Http\Controllers\API\Admin\ReviewAdminController;
 use App\Http\Controllers\API\Admin\SellerAdminController;
+use App\Http\Controllers\API\Admin\BookingAdminController;
 use App\Http\Middleware\checkRole;
 
 //auth
@@ -83,17 +84,18 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
 
     //admin
-    Route::middleware('checkRole')->prefix('admin')->group(function () {
-        Route::apiResource('users', AdminUserController::class);
-        Route::apiResource('properties', PropertyAdminController::class);
-        Route::apiResource('payments', PaymentAdminController::class);
-        Route::apiResource('sellers', SellerAdminController::class);
-        Route::apiResource('reviews', ReviewAdminController::class);
-        Route::apiResource('categories', CategoryAdminController::class);
-    });
-});
 
-//payment
+});
+Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(function () {
+    Route::apiResource('users', AdminUserController::class);
+    Route::apiResource('properties', PropertyAdminController::class);
+    Route::apiResource('payments', PaymentAdminController::class);
+    Route::apiResource('sellers', SellerAdminController::class);
+    Route::apiResource('reviews', ReviewAdminController::class);
+    Route::apiResource('categories', CategoryAdminController::class);
+    Route::apiResource('bookings', BookingAdminController::class);
+
+});
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 
