@@ -27,9 +27,10 @@ class UserController extends Controller
     public function index()
     {
         $allUsers = User::all();
+        $users=UserResource::collection($allUsers);
         return response()->json([
             "Message" => "Returned successflly",
-            "All Users" => $allUsers
+            "All Users" => $users
         ], 200);
     }
 

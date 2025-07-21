@@ -28,6 +28,7 @@ use App\Http\Controllers\API\Admin\PaymentAdminController;
 use App\Http\Controllers\API\Admin\ReviewAdminController;
 use App\Http\Controllers\API\Admin\SellerAdminController;
 use App\Http\Controllers\API\Admin\BookingAdminController;
+use App\Http\Controllers\API\Admin\AdminProfileController;
 use App\Http\Middleware\checkRole;
 
 //auth
@@ -94,7 +95,8 @@ Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(functio
     Route::apiResource('reviews', ReviewAdminController::class);
     Route::apiResource('categories', CategoryAdminController::class);
     Route::apiResource('bookings', BookingAdminController::class);
-
+    Route::put('edit-profile', [AdminProfileController::class, 'update']);
+    Route::get('profile', [AdminProfileController::class, 'index']);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
