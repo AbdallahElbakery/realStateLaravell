@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 use App\Models\User;
 use App\Http\Requests\StoreUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Http\Resources\BookingResource;
+use App\Http\Resources\UserResource;
 
 class UserController extends Controller
 {
@@ -16,9 +18,10 @@ class UserController extends Controller
     public function index()
     {
         $allUsers = User::all();
+        $users=UserResource::collection($allUsers);
         return response()->json([
             "Message" => "Returned successflly",
-            "All Users" => $allUsers
+            "All Users" => $users
         ], 200);
     }
 
@@ -38,11 +41,12 @@ class UserController extends Controller
     public function show(string $user_id)
     {
         $user = User::find($user_id);
+        $userDetails=new UserResource($user);
         if (!$user) {
             return response()->json(["msg" => "This User is not found"], 404);
         }
         // $seller=new SellerResource($singleUser);
-        return response()->json(["Message" => "Returned successflly", 'User' => $user], 200);
+        return response()->json(["Message" => "Returned successflly", 'User' => $userDetails], 200);
 
     }
 

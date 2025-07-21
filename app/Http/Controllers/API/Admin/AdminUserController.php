@@ -68,6 +68,10 @@ class AdminUserController extends Controller
         //     $photoname=time().'_'.$photo->getClientOriginalName();
         //     $path=$photo->move(public_path('uploads'),$photoname);
         // }
+        $address = Address::create([
+            'city' => $request->city,
+            'country' => $request->country
+        ]);
         $user->update(
             [
                 'name' => $request->name,
@@ -75,7 +79,7 @@ class AdminUserController extends Controller
                 'phone' => $request->phone,
                 'password' => bcrypt($request->password),
                 'photo' => $request->photo,
-                'address_id' => $request->address_id,
+                'address_id' => $address->id,
                 'role' => $request->role,
             ]
         );

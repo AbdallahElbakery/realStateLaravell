@@ -97,6 +97,7 @@ Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(functio
     Route::apiResource('categories', CategoryAdminController::class);
     Route::apiResource('bookings', BookingAdminController::class);
     Route::put('edit-profile', [AdminProfileController::class, 'update']);
+    Route::get('profile', [AdminProfileController::class, 'index']);
 });
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
