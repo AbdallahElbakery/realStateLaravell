@@ -89,9 +89,9 @@ Route::middleware('auth:sanctum')->group(function () {
     //payment
     Route::post('payment', [PaymentController::class, 'paypal'])->name('paypal');
 
-    //admin
-
 });
+
+//Admin
 Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(function () {
     Route::apiResource('users', AdminUserController::class);
     Route::apiResource('properties', PropertyAdminController::class);
@@ -103,6 +103,8 @@ Route::middleware(['auth:sanctum', 'checkRole'])->prefix('admin')->group(functio
     Route::put('edit-profile', [AdminProfileController::class, 'update']);
     Route::get('profile', [AdminProfileController::class, 'index']);
 });
+
+//payment
 Route::get('payment/success', [PaymentController::class, 'success'])->name('success');
 Route::get('payment/cancel', [PaymentController::class, 'cancel'])->name('cancel');
 
