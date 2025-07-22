@@ -60,7 +60,7 @@ class SellerController extends Controller
         $seller = new SellerResource($singleSeller);
         return response()->json(["Message" => "Returned successflly", 'Seller' => $seller], 200);
     }
-    
+
     public function getSellerProperties($id)
     {
         $user = User::find($id);
@@ -177,12 +177,17 @@ class SellerController extends Controller
         if (!$seller) {
             return response()->json(['msg' => 'this seller is not existed'], 404);
         }
+        $address = Address::create([
+            "city" => $request->city,
+            "country" => $request->country,
+        ]);
         $validated = $request->validated();
         if ($request->hasFile('image')) {
             $path = $request->file('image')->store('properties', 'public');
             $validated['image'] = $path;
         }
         $validated['seller_id'] = $seller->user_id;
+        $validated['address_id'] = $address->id;
         Property::create($validated);
         return response()->json(["msg" => "added new property owned to seller " . $seller->user_id], 201);
     }
@@ -190,6 +195,10 @@ class SellerController extends Controller
     public function updateOwnProperty(UpdateOwnProperty $request, $prop_id)
     {
         $user = auth()->user();
+        $address = Address::create([
+            "city" => $request->city,
+            "country" => $request->country,
+        ]);
         $seller = Seller::where('user_id', $user->id)->first();
         $property = Property::where('seller_id', $user->id)->where('id', $prop_id)->first();
         if (!$seller) {
@@ -206,6 +215,7 @@ class SellerController extends Controller
             $path = $file->storeAs('properties', $filename, 'public');
             $validatedData['image'] = $path;
         }
+        $validatedData['address_id'] = $address->id;
         $property->update($validatedData);
         return response()->json(["msg" => "updated property with id " . $property->id . " owned to seller " . $seller->user_id, "Propert" => $property], 200);
     }
