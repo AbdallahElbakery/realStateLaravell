@@ -11,30 +11,30 @@ class ChatController extends Controller
     {
         try {
             $question = $request->input('question');
-            
+
             if (!$question) {
                 return response()->json(['answer' => 'Please enter a question'], 400);
             }
-            
+
             $question = mb_strtolower($question, 'UTF-8');
-            
-            
+
+
             \Log::info('Chat question: ' . $question);
-            
+
             // Welcome message
             if (mb_strpos($question, 'hello') !== false || mb_strpos($question, 'hi') !== false || mb_strpos($question, 'welcome') !== false) {
                 return response()->json([
-                    'answer' => 'Hello! I am the smart assistant for the real estate website. I can help you search for properties, prices, locations, and more. How can I assist you?'
+                    'answer' => 'Hello! I am the smart assistant for the RealEase website. I can help you search for properties, prices, locations, and more. How can I assist you?'
                 ]);
             }
-            
+
             // Help message
             if (mb_strpos($question, 'help') !== false) {
                 return response()->json([
                     'answer' => "I can help you with:\n\n🏠 Properties:\n- Search for properties\n- Get prices\n- Get locations\n- Number of available properties\n\n👥 Users:\n- Search for users\n- Get user count\n- Search for sellers\n- Search for customers\n- User names\n\n📊 Statistics:\n- System statistics\n\nTry asking me about any of these topics!"
                 ]);
             }
-            
+
             // Search for properties
             if (mb_strpos($question, 'properties') !== false) {
                 try {
@@ -43,7 +43,7 @@ class ChatController extends Controller
                         ->select('properties.*', 'addresses.city', 'addresses.full_address')
                         ->limit(3)
                         ->get();
-                    
+
                     if ($properties->count() > 0) {
                         $answer = "We have " . $properties->count() . " available properties:\n";
                         foreach ($properties as $property) {
@@ -58,7 +58,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for properties.']);
                 }
             }
-            
+
             // Search for price
             if (mb_strpos($question, 'price') !== false) {
                 try {
@@ -66,7 +66,7 @@ class ChatController extends Controller
                         ->join('addresses', 'properties.citynum', '=', 'addresses.id')
                         ->select('properties.*', 'addresses.city', 'addresses.full_address')
                         ->first();
-                    
+
                     if ($property) {
                         $location = $property->full_address ?: $property->city;
                         return response()->json([
@@ -79,7 +79,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for the price.']);
                 }
             }
-            
+
             // Search for location
             if (mb_strpos($question, 'location') !== false || mb_strpos($question, 'where') !== false) {
                 try {
@@ -87,7 +87,7 @@ class ChatController extends Controller
                         ->join('addresses', 'properties.citynum', '=', 'addresses.id')
                         ->select('properties.*', 'addresses.city', 'addresses.full_address')
                         ->first();
-                    
+
                     if ($property) {
                         $location = $property->full_address ?: $property->city;
                         return response()->json([
@@ -100,7 +100,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for the location.']);
                 }
             }
-            
+
             // Search for property count
             if (mb_strpos($question, 'how many') !== false && mb_strpos($question, 'properties') !== false) {
                 try {
@@ -112,7 +112,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error getting the property count.']);
                 }
             }
-            
+
             // Search for users
             if (mb_strpos($question, 'users') !== false || mb_strpos($question, 'user') !== false) {
                 try {
@@ -131,7 +131,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for users.']);
                 }
             }
-            
+
             // Search for user count
             if (mb_strpos($question, 'how many') !== false && mb_strpos($question, 'user') !== false) {
                 try {
@@ -143,7 +143,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error getting the user count.']);
                 }
             }
-            
+
             // Search for sellers
             if (mb_strpos($question, 'seller') !== false) {
                 try {
@@ -161,7 +161,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for sellers.']);
                 }
             }
-            
+
             // Search for customers
             if (mb_strpos($question, 'customer') !== false || mb_strpos($question, 'buyer') !== false) {
                 try {
@@ -179,7 +179,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for customers.']);
                 }
             }
-            
+
             // Search for user names
             if (mb_strpos($question, 'name') !== false && mb_strpos($question, 'user') !== false) {
                 try {
@@ -197,7 +197,7 @@ class ChatController extends Controller
                     return response()->json(['answer' => 'Sorry, there was an error searching for user names.']);
                 }
             }
-            
+
             // System statistics
             if (mb_strpos($question, 'statistics') !== false) {
                 try {
@@ -205,13 +205,13 @@ class ChatController extends Controller
                     $sellers = DB::table('users')->where('role', 'seller')->count();
                     $customers = DB::table('users')->where('role', 'user')->count();
                     $properties = DB::table('properties')->count();
-                    
+
                     $answer = "📊 System Statistics:\n\n";
                     $answer .= "👥 Total users: " . $totalUsers . "\n";
                     $answer .= "🏪 Sellers: " . $sellers . "\n";
                     $answer .= "🛒 Customers: " . $customers . "\n";
                     $answer .= "🏠 Properties: " . $properties . "\n";
-                    
+
                     return response()->json(['answer' => $answer]);
                 } catch (\Exception $e) {
                     return response()->json(['answer' => 'Sorry, there was an error fetching statistics.']);
@@ -222,7 +222,7 @@ class ChatController extends Controller
             return response()->json([
                 'answer' => "Sorry, I didn't understand your question. Try asking about:\n\n🏠 Properties: 'property', 'price', 'location'\n👥 Users: 'users', 'sellers', 'customers'\n\nOr type 'help' to see everything I can help you with."
             ]);
-            
+
         } catch (\Exception $e) {
             return response()->json([
                 'answer' => 'Sorry, a system error occurred. Please try again.'

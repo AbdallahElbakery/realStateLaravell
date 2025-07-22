@@ -32,7 +32,9 @@ class UpdateOwnProperty extends FormRequest
             "bathrooms" => "required",
             "purpose" => "required",
             "category_id" => "required|exists:categories,id",
-            "address_id" => "required|exists:addresses,id",
+            // "address_id" => "required|exists:addresses,id",
+            'city' => 'required',
+            'country' => 'required',
         ];
     }
 }
