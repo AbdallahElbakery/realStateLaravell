@@ -63,6 +63,8 @@ Route::middleware('auth:sanctum')->group(function () {
     //seller
     Route::apiResource('sellers', SellerController::class)->only(['index', 'store']);
     Route::get('seller', [SellerController::class, 'show']);
+    Route::get('single-seller/{id}', [SellerController::class, 'showSeller']);
+    Route::get('get-seller-properties/{id}', [SellerController::class, 'getSellerProperties']);
     Route::put('seller', [SellerController::class, 'update']);
     Route::delete('seller', [SellerController::class, 'destroy']);
 

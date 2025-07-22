@@ -49,7 +49,27 @@ class SellerController extends Controller
         $seller = new SellerResource($singleSeller);
         return response()->json(["Message" => "Returned successflly", 'Seller' => $seller], 200);
     }
+    public function showSeller(string $id)
+    {
+        $user = User::find($id);
+        $singleSeller = Seller::where('user_id', $user->id)->first();
 
+        if (!$singleSeller) {
+            return response()->json(["msg" => "This seller is not found"], 404);
+        }
+        $seller = new SellerResource($singleSeller);
+        return response()->json(["Message" => "Returned successflly", 'Seller' => $seller], 200);
+    }
+    
+    public function getSellerProperties($id)
+    {
+        $user = User::find($id);
+        $props = Property::where('seller_id', $user->id)->get();
+        if (!$props) {
+            return response()->json(['msg' => 'no properties found'], 404);
+        }
+        return response()->json(["Property" => $props], 200);
+    }
 
     public function update(UpdateSeller $request)
     {
