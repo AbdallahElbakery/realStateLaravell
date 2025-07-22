@@ -82,8 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::put('properties/{id}', [PropertyController::class, 'update']);
     Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
 
-    //addresses
-    Route::apiResource('addresses', AddressController::class);
+
 
     //categories
     Route::apiResource('categories', CategoryController::class);
@@ -136,3 +135,6 @@ Route::post('/offers/{id}/accept', [OfferController::class, 'accept']);
 
 //chat
 Route::post('/chat', [ChatController::class, 'ask']);
+
+//addresses
+Route::apiResource('addresses', AddressController::class);
