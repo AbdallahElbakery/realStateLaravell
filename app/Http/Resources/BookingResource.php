@@ -19,7 +19,7 @@ class BookingResource extends JsonResource
     {
         return [
             "id" => $this->id,
-            "seller" => Seller::where('user_id', $this->user_id)->first()->user_id,
+            "seller" => Seller::where('user_id', $this->user_id)->first(),
             "user" => User::where("id", $this->user_id)->first()->name,
             "property" => Property::where("id", $this->property_id)->first()->name,
             "suggested_price" => $this->suggested_price,
